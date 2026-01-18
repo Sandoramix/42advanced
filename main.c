@@ -23,11 +23,11 @@ bool	test_strlen(void)
 		if (strlen(strings[i]) != curr_value)
 		{
 			result = false;
-			printf("\e[[91mFAILED\e[[0m"
+			printf("[\e[91mFAILED]\e[0m"
 				"(expected %lu, got %lu)\n", strlen(strings[i]), curr_value);
 		}
 		else
-			printf("\e[[92mOK\e[[0m\n");
+			printf("[\e[92mOK]\e[0m\n");
 	}
 	return (result);
 }
@@ -114,7 +114,7 @@ static int	run_case(char *s)
 	found = false;
 	fail = false;
 	i = -1;
-	while (g_all_fn_names[++i])
+	while (++i < tot_size)
 	{
 		if (!s || !strcmp(s, g_all_fn_names[i]))
 		{
