@@ -12,6 +12,8 @@ section .text
 
 ft_strcmp:
 	xor rax, rax
+	xor rbx, rbx
+	xor rcx, rcx
 	xor bl, bl
 	xor cl, cl
 	.loop:

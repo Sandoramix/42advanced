@@ -1,9 +1,11 @@
 NAME=libasm.a
 TEST_NAME=libasm
 
-SRC= ./ft_strcmp.s \
+SRC= ft_read.s \
+	./ft_strcmp.s \
 	./ft_strlen.s \
 	./ft_strcpy.s \
+	./ft_strdup.s \
 	./ft_write.s
 
 AS=nasm

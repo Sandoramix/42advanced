@@ -5,21 +5,21 @@
 # define PRINT_RESULT_EXT(is_valid, error_val, error_template, ...) \
 	do { \
 		if (is_valid) \
-			printf("[\e[92mOK]\e[0m"); \
+			fprintf(stderr, "\t[\e[92mOK]\e[0m"); \
 		else \
 		{ \
-			printf("[\e[91mFAILED]\e[0m"); \
+			fprintf(stderr, "\t[\e[91mFAILED]\e[0m"); \
 			*error_val = false; \
 		} \
-		printf(" (" error_template ")\n", ##__VA_ARGS__); \
+		fprintf(stderr, " (" error_template ")\n", ##__VA_ARGS__); \
 	} while (0);
 # define PRINT_RESULT(is_valid, error_val) \
 	do { \
 		if (is_valid) \
-			printf("[\e[92mOK]\e[0m\n"); \
+			fprintf(stderr, "\t[\e[92mOK]\e[0m\n"); \
 		else \
 		{ \
-			printf("[\e[91mFAILED]\e[0m\n"); \
+			fprintf(stderr, "\t[\e[91mFAILED]\e[0m\n"); \
 			*error_val = false; \
 		} \
 	} while (0);
@@ -39,12 +39,18 @@ bool	test_strlen(void)
 	while (strings[++i])
 	{
 		curr_value = ft_strlen(strings[i]);
-		printf("[%d]: \"%s\" - ", i, strings[i]);
+		fprintf(stderr, "[%d]: \"%s\" ->\n", i, strings[i]);
 		PRINT_RESULT_EXT(
 			strlen(strings[i]) == curr_value, &result,
 			"expected %lu, got %lu", strlen(strings[i]), curr_value
 		);
 	}
+	fprintf(stderr, "[%d]: NULL ->\n", i);
+	curr_value = ft_strlen(NULL);
+	PRINT_RESULT_EXT(
+		curr_value == 0, &result,
+		"expected 0, got %lu", curr_value
+	);
 	return (result);
 }
 
@@ -61,13 +67,12 @@ bool	test_strcpy(void)
 	result = true;
 	while (inputs[++i])
 	{
-		printf("[%d]: \"%s\" -> ", i, inputs[i]);
+		fprintf(stderr, "[%d]: \"%s\" ->\n", i, inputs[i]);
 		ft_strcpy(dst, inputs[i]);
 		PRINT_RESULT_EXT(!strcmp(dst, inputs[i]), &result,
 			"expected \"%s\", got \"%s\"", inputs[i], dst
 		);
 	}
-
 	return (true);
 }
 
@@ -85,9 +90,8 @@ bool	test_strcmp(void)
 	result = true;
 	while (inputs[++i])
 	{
-		printf("[%d]: \"%s\" <-> \"%s\" - ", i, base, inputs[i]);
+		fprintf(stderr, "[%d]: \"%s\" <-> \"%s\" ->\n", i, base, inputs[i]);
 		value = ft_strcmp(base, inputs[i]);
-
 		PRINT_RESULT_EXT(value == strcmp(base, inputs[i]), &result,
 			"expected %d, got %d", strcmp(base, inputs[i]), value
 		);
@@ -95,39 +99,97 @@ bool	test_strcmp(void)
 	return (true);
 }
 
+typedef struct s_write_test
+{
+	int			fd;
+	const char	*buf;
+	size_t		count;
+
+	ssize_t		expected;
+}	t_write_test;
+
 bool	test_write(void)
 {
-	bool	result;
-	ssize_t	curr;
+	const t_write_test	tests[] = {
+		{1, "test", 4, 4}, {2, "err_test", 8, 8}, {69, "bad_test", 8, -1}
+	};
+	const int			tot_size = sizeof(tests) / sizeof(tests[0]);
+	bool				result;
+	ssize_t				curr;
+	int					i;
 
+	errno = 0;
 	result = true;
-	fprintf(stderr, "[0]: write(1, \"test\", 4) - ");
-	curr = ft_write(1, "test", 4);
-	PRINT_RESULT_EXT(curr == 4, &result,
-		"expected 4, got %zd", ft_write(1, "test", 4)
+	i = -1;
+	while (++i < tot_size)
+	{
+		fprintf(stderr, "[%d]: write(%d, \"%s\", %zu) ->\n", i,
+			tests[i].fd, tests[i].buf, tests[i].count
+		);
+		curr = ft_write(tests[i].fd, tests[i].buf, tests[i].count);
+		PRINT_RESULT_EXT(curr == tests[i].expected, &result,
+			"expected %zu, got %zd", tests[i].expected, curr
+		);
+		fprintf(stderr, "\t\tCurrent errno = %d\n", errno);
+		perror("\t\tCurrent errno message");
+	}
+	return (result);
+}
+
+bool	test_read(void)
+{
+	int		curr;
+	char	buf[1024];
+	bool	result;
+
+	errno = 0;
+	result = true;
+	fprintf(stderr, "[0]: read(STDIN_FILENO, buf, sizeof(buf))\nManual input:");
+	curr = ft_read(STDIN_FILENO, buf, sizeof(buf));
+	buf[curr] = '\0';
+	fprintf(stderr, "Got \"%s\" - ", buf);
+	PRINT_RESULT_EXT(curr == strlen(buf), &result,
+		"expected %lu, got %d", strlen(buf), curr
 	);
-	fprintf(stderr, "[1]: write(1, \"test\", 5) - ");
-	curr = ft_write(1, "test", 5);
-	PRINT_RESULT_EXT(curr == 5, &result,
-		"expected -1, got %zd", curr
-	);
-	fprintf(stderr, "[2]: write(69, \"test\", 4) - ");
-	curr = ft_write(69, "test", 4);
+	curr = ft_read(666, buf, sizeof(buf));
 	PRINT_RESULT_EXT(curr == -1, &result,
-		"expected -1, got %zd", curr
+		"expected -1, got %d", curr
 	);
 	fprintf(stderr, "\terrno = %d", errno);
 	perror("\tperror_value");
 	return (result);
 }
 
-bool	test_read(void)
-{
-	return (true);
-}
-
 bool	test_strdup(void)
 {
+	char	*curr;
+	const char	*inputs[] = {
+		"", "test", "test2", NULL
+	};
+	bool	result;
+	int		i;
+
+	errno = 0;
+	result = true;
+	i = -1;
+	while (inputs[++i])
+	{
+		fprintf(stderr, "[%d]: ft_strdup(\"%s\") ->\n", i, inputs[i]);
+		curr = ft_strdup(inputs[i]);
+		PRINT_RESULT_EXT(curr != NULL, &result,
+			"expected non-NULL, got \"%s\"", curr
+		);
+		PRINT_RESULT_EXT(!strcmp(curr, inputs[i]), &result,
+			"expected \"%s\", got \"%s\"", inputs[i], curr
+		);
+		free(curr);
+	}
+	fprintf(stderr, "[%d]: ft_strdup(NULL) -> ", i);
+	curr = ft_strdup(NULL);
+	PRINT_RESULT_EXT(curr == NULL, &result,
+		"expected NULL, got non-NULL"
+	);
+	free(curr);
 	return (true);
 }
 
@@ -195,6 +257,8 @@ static int	run_case(char *s)
 			printf("Running test: %s\n", g_all_fn_names[i]);
 			fail |= !(g_all_fn_refs[i])();
 			found = true;
+			fprintf(stderr, "Press ENTER to continue...");
+			getchar();
 		}
 	}
 	if (!found)
