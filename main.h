@@ -8,7 +8,6 @@
 # include <stdbool.h>
 # include <string.h>
 
-
 // MANDATORY FN NAMES
 # define FT_STRLEN "ft_strlen"
 # define FT_STRCPY "ft_strcpy"

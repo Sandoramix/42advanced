@@ -10,6 +10,7 @@ section .text
 	extern malloc
 
 ft_strdup:
+	xor rax, rax
 	cmp rdi, 0
 		je .end		; s == NULL
 	mov rsi, rdi	; RSI: s

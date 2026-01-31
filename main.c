@@ -206,16 +206,107 @@ bool	test_atoi_base(void)
 
 bool	test_list_push_front(void)
 {
+	t_list			**all_addresses;
+	t_list			*list;
+	int				i;
+	bool			result;
+
+	result = true;
+	list = NULL;
+	all_addresses = NULL;
+	for (i = 0; i < 10; i++)
+	{
+		ft_list_push_front(&list, (void *)i);
+		all_addresses = realloc(all_addresses, sizeof(t_list *) * (i + 1));
+		all_addresses[i] = list;
+
+		bool	is_addr_ok = true;
+		bool	is_data_ok = true;
+		t_list	*curr = list;
+		int j = 0;
+		for ( ; j <= i; j++)
+		{
+			is_addr_ok = all_addresses[i - j] == curr;
+			is_data_ok = curr && curr->data == (void *) i - j;
+			if (!is_addr_ok || !is_data_ok)
+			{
+				result = false;
+				break;
+			}
+			curr = curr->next;
+		}
+		fprintf(stderr, "[%d]: %d nodes\n", i, i + 1);
+		PRINT_RESULT_EXT(is_addr_ok && is_data_ok, &result,
+			"expected head to be %p (data: %p), got %p (data: %p)\t[ADDR: %s, DATA: %s]. j=%d",
+			all_addresses[i], i, list, list ? list->data : NULL, 
+			is_addr_ok ? "OK" : "FAILED",
+			is_data_ok ? "OK" : "FAILED",
+			j
+		);
+	}
 	return (true);
 }
 
 bool	test_list_size(void)
 {
-	return (true);
+	t_list	*list;
+	t_list	*last;
+	t_list	*node;
+	bool	result;
+	int		curr;
+
+	result = true;
+	last = NULL;
+	list = NULL;
+	for (int i = 0; i < 10; i++){
+		node = calloc(1, sizeof(t_list));
+		node->data = (void *)i;
+		if (last){
+			last->next = node;
+		}
+		if (!list){
+			list = node;
+		}
+		last = node;
+		fprintf(stderr, "[%d]: %d nodes\n", i, i + 1);
+		curr = ft_list_size(list);
+		PRINT_RESULT_EXT(curr == i + 1, &result,
+			"expected %d, got %d", i + 1, curr
+		);
+	}
+	return (result);
+}
+
+t_cmp_fn	foo(const void *a, const void *b)
+{
+	write(2, "foo\n", 4);
+	return (0);
 }
 
 bool	test_list_sort(void)
 {
+	const int		values[] = {5, 4, 2, 1, 0};
+	const int		tot_size = sizeof(values) / sizeof(values[0]);
+	t_list			*list;
+	t_list			*last;
+	t_list			*node;
+	t_cmp_fn		*function;
+
+	list = NULL;
+	last = NULL;
+	int i;
+	for (i = 0; i < tot_size; i++)
+	{
+		node = calloc(1, sizeof(t_list));
+		node->data = (void *)values[i];
+		if (last)
+			last->next = node;
+		if (!list)
+			list = node;
+		last = node;
+	}
+	function = foo;
+	ft_list_sort(&list, function);
 	return (true);
 }
 

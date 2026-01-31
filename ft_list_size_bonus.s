@@ -1,0 +1,21 @@
+; typedef struct s_list {
+; 	void *data;
+; 	struct s_list *next;
+; } t_list;
+
+; int ft_list_size(t_list *list);
+
+
+section .text
+	global ft_list_size
+
+ft_list_size:
+	xor rax, rax
+	.loop:
+		cmp rdi, 0
+			je .end
+		inc rax
+		mov rdi, [rdi + 8]
+		jmp .loop
+	.end:
+		ret
