@@ -279,8 +279,7 @@ bool	test_list_size(void)
 
 t_cmp_fn	foo(const void *a, const void *b)
 {
-	write(2, "foo\n", 4);
-	return (0);
+	return (a - b);
 }
 
 bool	test_list_sort(void)
@@ -291,7 +290,9 @@ bool	test_list_sort(void)
 	t_list			*last;
 	t_list			*node;
 	t_cmp_fn		*function;
+	bool			result;
 
+	result = true;
 	list = NULL;
 	last = NULL;
 	int i;
@@ -307,6 +308,28 @@ bool	test_list_sort(void)
 	}
 	function = foo;
 	ft_list_sort(&list, function);
+
+	fprintf(stderr, "[0]: {");
+	for (int i = 0; i < 10; i++){
+		fprintf(stderr, "%d", values[i]);
+		if (i < 9)
+		fprintf(stderr, ", ");
+	}
+	fprintf(stderr, "}\n");
+
+	int prev = (int)list->data;
+	bool is_ok = true;
+	t_list *curr = list;
+	for (int i = 0; i < 10; i++){
+		int value = (int)curr->data;
+		is_ok = value >= prev;
+		prev = value;
+		curr = curr->next;
+
+	}
+	PRINT_RESULT_EXT(is_ok, &result,
+		"Expected list to be sorted, got unsorted"
+	);
 	return (true);
 }
 
