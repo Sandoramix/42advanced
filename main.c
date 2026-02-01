@@ -1,401 +1,286 @@
-
 #include "./libasm.h"
 #include "./main.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include <errno.h>
+#include <unistd.h>
 
-# define PRINT_RESULT_EXT(is_valid, error_val, error_template, ...) \
-	do { \
-		if (is_valid) \
-			fprintf(stderr, "\t[\e[92mOK]\e[0m"); \
+// ------------------ PRINT HELPERS ------------------
+
+#define PRINT_OK "\e[92mOK\e[0m"
+#define PRINT_FAIL "\e[91mFAILED\e[0m"
+
+#define PRINT_RESULT_EXT(cond, flag, fmt, ...) \
+	do \
+	{ \
+		if (cond) \
+			fprintf(stderr, "\t[%s] ", PRINT_OK); \
 		else \
 		{ \
-			fprintf(stderr, "\t[\e[91mFAILED]\e[0m"); \
-			*error_val = false; \
+			fprintf(stderr, "\t[%s] ", PRINT_FAIL); \
+			*flag = false; \
 		} \
-		fprintf(stderr, " (" error_template ")\n", ##__VA_ARGS__); \
-	} while (0);
-# define PRINT_RESULT(is_valid, error_val) \
-	do { \
-		if (is_valid) \
-			fprintf(stderr, "\t[\e[92mOK]\e[0m\n"); \
-		else \
-		{ \
-			fprintf(stderr, "\t[\e[91mFAILED]\e[0m\n"); \
-			*error_val = false; \
-		} \
-	} while (0);
+		fprintf(stderr, fmt "\n", ##__VA_ARGS__); \
+	} while (0)
 
-// MANDATORY TESTS--------------------------------------------------------------
+#define RUN_SUBTEST(desc, cond, flag, fmt, ...) \
+	do \
+	{ \
+		fprintf(stderr, "[%s]:", desc); \
+		PRINT_RESULT_EXT(cond, flag, fmt, ##__VA_ARGS__); \
+	} while (0)
+
+// ------------------ TEST FUNCTION TYPE ------------------
+
+typedef bool (*t_test_fn)(void);
+
+typedef struct s_test_entry
+{
+	const char *name;
+	t_test_fn fn;
+} t_test_entry;
+
+// ------------------ MANDATORY TESTS ------------------
+
 bool	test_strlen(void)
 {
-	const char	*strings[] = {
-		"", "test", NULL
-	};
-	int			i;
-	bool		result;
-	size_t		curr_value;
+	const char	*strings[] = {"", "test", "longer string", NULL};
+	bool		result = true;
 
-	i = -1;
-	result = true;
-	while (strings[++i])
+	for (int i = 0; strings[i]; i++)
 	{
-		curr_value = ft_strlen(strings[i]);
-		fprintf(stderr, "[%d]: \"%s\" ->\n", i, strings[i]);
-		PRINT_RESULT_EXT(
-			strlen(strings[i]) == curr_value, &result,
-			"expected %lu, got %lu", strlen(strings[i]), curr_value
-		);
+		size_t got = ft_strlen(strings[i]);
+		RUN_SUBTEST(strings[i], got == strlen(strings[i]), &result,
+			"expected %lu, got %lu", strlen(strings[i]), got);
 	}
-	fprintf(stderr, "[%d]: NULL ->\n", i);
-	curr_value = ft_strlen(NULL);
-	PRINT_RESULT_EXT(
-		curr_value == 0, &result,
-		"expected 0, got %lu", curr_value
-	);
-	return (result);
+	size_t got = ft_strlen(NULL);
+	RUN_SUBTEST("NULL", got == 0, &result, "expected 0, got %lu", got);
+	return result;
 }
 
 bool	test_strcpy(void)
 {
-	char		dst[100] = {0};
-	const char	*inputs[] = {
-		"", "test", "test2", NULL
-	};
-	int			i;
-	bool		result;
+	const char	*inputs[] = {"", "test", "longer string", NULL};
+	char		dst[128];
+	bool		result = true;
 
-	i = -1;
-	result = true;
-	while (inputs[++i])
+	for (int i = 0; inputs[i]; i++)
 	{
-		fprintf(stderr, "[%d]: \"%s\" ->\n", i, inputs[i]);
 		ft_strcpy(dst, inputs[i]);
-		PRINT_RESULT_EXT(!strcmp(dst, inputs[i]), &result,
-			"expected \"%s\", got \"%s\"", inputs[i], dst
-		);
+		RUN_SUBTEST(inputs[i], strcmp(dst, inputs[i]) == 0, &result,
+			"expected \"%s\", got \"%s\"", inputs[i], dst);
 	}
-	return (true);
+	return result;
 }
 
 bool	test_strcmp(void)
 {
-	const char	*inputs[] = {
-		"", "test", "test2", NULL
-	};
+	const char	*inputs[] = {"", "test", "test2", NULL};
 	const char	*base = "test";
-	int			i;
-	bool		result;
-	int			value;
+	bool		result = true;
 
-	i = -1;
-	result = true;
-	while (inputs[++i])
+	for (int i = 0; inputs[i]; i++)
 	{
-		fprintf(stderr, "[%d]: \"%s\" <-> \"%s\" ->\n", i, base, inputs[i]);
-		value = ft_strcmp(base, inputs[i]);
-		PRINT_RESULT_EXT(value == strcmp(base, inputs[i]), &result,
-			"expected %d, got %d", strcmp(base, inputs[i]), value
-		);
+		int got = ft_strcmp(base, inputs[i]);
+		int expected = strcmp(base, inputs[i]);
+		char desc[64];
+		snprintf(desc, sizeof(desc), "\"%s\" vs \"%s\"", base, inputs[i]);
+		RUN_SUBTEST(desc, got == expected, &result,
+			"expected %d, got %d", expected, got);
 	}
-	return (true);
+	return result;
 }
-
-typedef struct s_write_test
-{
-	int			fd;
-	const char	*buf;
-	size_t		count;
-
-	ssize_t		expected;
-}	t_write_test;
 
 bool	test_write(void)
 {
-	const t_write_test	tests[] = {
-		{1, "test", 4, 4}, {2, "err_test", 8, 8}, {69, "bad_test", 8, -1}
-	};
-	const int			tot_size = sizeof(tests) / sizeof(tests[0]);
-	bool				result;
-	ssize_t				curr;
-	int					i;
-
-	errno = 0;
-	result = true;
-	i = -1;
-	while (++i < tot_size)
+	struct
 	{
-		fprintf(stderr, "[%d]: write(%d, \"%s\", %zu) ->\n", i,
-			tests[i].fd, tests[i].buf, tests[i].count
-		);
-		curr = ft_write(tests[i].fd, tests[i].buf, tests[i].count);
-		PRINT_RESULT_EXT(curr == tests[i].expected, &result,
-			"expected %zu, got %zd", tests[i].expected, curr
-		);
-		fprintf(stderr, "\t\tCurrent errno = %d\n", errno);
-		perror("\t\tCurrent errno message");
+		int fd;
+		const char *buf;
+		size_t count;
+		ssize_t expected;
+	}	tests[] = {
+		{.fd = 1, .buf = "test", .count = 4, .expected = 4},
+		{.fd = 2, .buf = "err_test", .count = 8, .expected = 8},
+		{.fd = 69, .buf = "bad_test", .count = 8, .expected = -1},
+	};
+	bool	result = true;
+	for (int i = 0; i < 3; i++)
+	{
+		errno = 0;
+		ssize_t got = ft_write(tests[i].fd, tests[i].buf, tests[i].count);
+		char desc[64];
+		snprintf(desc, sizeof(desc), "write(fd=%d)", tests[i].fd);
+		RUN_SUBTEST(desc, got == tests[i].expected, &result,
+			"expected %zd, got %zd (errno=%d)", tests[i].expected, got, errno);
 	}
-	return (result);
+	return result;
 }
 
 bool	test_read(void)
 {
-	int		curr;
-	char	buf[1024];
-	bool	result;
+	char buf[1024];
+	bool	result = true;
 
+	// Interactive read
+	fprintf(stderr, "[Manual Input] Enter some text:\n");
 	errno = 0;
-	result = true;
-	fprintf(stderr, "[0]: read(STDIN_FILENO, buf, sizeof(buf))\nManual input:");
-	curr = ft_read(STDIN_FILENO, buf, sizeof(buf));
-	buf[curr] = '\0';
-	fprintf(stderr, "Got \"%s\" - ", buf);
-	PRINT_RESULT_EXT(curr == strlen(buf), &result,
-		"expected %lu, got %d", strlen(buf), curr
-	);
-	curr = ft_read(666, buf, sizeof(buf));
-	PRINT_RESULT_EXT(curr == -1, &result,
-		"expected -1, got %d", curr
-	);
-	fprintf(stderr, "\terrno = %d", errno);
-	perror("\tperror_value");
-	return (result);
+	ssize_t got = ft_read(STDIN_FILENO, buf, sizeof(buf) - 1);
+	if (got >= 0)
+		buf[got] = '\0';
+	RUN_SUBTEST("read(STDIN_FILENO)", got == (ssize_t)strlen(buf), &result,
+		"expected %lu, got %zd", strlen(buf), got);
+	// Invalid fd
+	errno = 0;
+	got = ft_read(666, buf, sizeof(buf));
+	RUN_SUBTEST("read(invalid_fd)", got == -1, &result,
+		"expected -1, got %zd (errno=%d)", got, errno);
+	return result;
 }
 
 bool	test_strdup(void)
 {
-	char	*curr;
-	const char	*inputs[] = {
-		"", "test", "test2", NULL
-	};
-	bool	result;
-	int		i;
+	const char	*inputs[] = {"", "test", "longer string", NULL};
+	bool		result = true;
+	char		*dup;
 
-	errno = 0;
-	result = true;
-	i = -1;
-	while (inputs[++i])
+	for (int i = 0; inputs[i]; i++)
 	{
-		fprintf(stderr, "[%d]: ft_strdup(\"%s\") ->\n", i, inputs[i]);
-		curr = ft_strdup(inputs[i]);
-		PRINT_RESULT_EXT(curr != NULL, &result,
-			"expected non-NULL, got \"%s\"", curr
-		);
-		PRINT_RESULT_EXT(!strcmp(curr, inputs[i]), &result,
-			"expected \"%s\", got \"%s\"", inputs[i], curr
-		);
-		free(curr);
+		dup = ft_strdup(inputs[i]);
+		RUN_SUBTEST(inputs[i], dup != NULL, &result, "expected non-NULL");
+		if (dup)
+		{
+			RUN_SUBTEST(inputs[i], strcmp(dup, inputs[i]) == 0, &result,
+				"expected \"%s\", got \"%s\"", inputs[i], dup);
+			free(dup);
+		}
 	}
-	fprintf(stderr, "[%d]: ft_strdup(NULL) -> ", i);
-	curr = ft_strdup(NULL);
-	PRINT_RESULT_EXT(curr == NULL, &result,
-		"expected NULL, got non-NULL"
-	);
-	free(curr);
-	return (true);
+	dup = ft_strdup(NULL);
+	RUN_SUBTEST("NULL", dup == NULL, &result, "expected NULL");
+	free(dup);
+	return result;
 }
 
+// ------------------ BONUS LINKED LIST TESTS ------------------
 
-
-//------------------------------------------------------------------------------
-
-// BONUS TESTS------------------------------------------------------------------
-
-bool	test_atoi_base(void)
+static void	free_list(t_list **list)
 {
-	return (true);
+	t_list	*curr = *list;
+	while (curr)
+	{
+		t_list	*tmp = curr;
+		curr = curr->next;
+		free(tmp);
+	}
+	*list = NULL;
 }
 
 bool	test_list_push_front(void)
 {
-	t_list			**all_addresses;
-	t_list			*list;
-	int				i;
-	bool			result;
+	t_list	*list = NULL;
+	t_list	**addrs = NULL;
+	bool	result = true;
 
-	result = true;
-	list = NULL;
-	all_addresses = NULL;
-	for (i = 0; i < 10; i++)
+	for (int i = 0; i < 10; i++)
 	{
-		ft_list_push_front(&list, (void *)i);
-		all_addresses = realloc(all_addresses, sizeof(t_list *) * (i + 1));
-		all_addresses[i] = list;
+		ft_list_push_front(&list, (void *)(long)i);
+		addrs = realloc(addrs, sizeof(t_list *) * (i + 1));
+		addrs[i] = list;
 
-		bool	is_addr_ok = true;
-		bool	is_data_ok = true;
-		t_list	*curr = list;
-		int j = 0;
-		for ( ; j <= i; j++)
+		t_list *curr = list;
+		bool	ok = true;
+		for (int j = 0; j <= i; j++)
 		{
-			is_addr_ok = all_addresses[i - j] == curr;
-			is_data_ok = curr && curr->data == (void *) i - j;
-			if (!is_addr_ok || !is_data_ok)
+			if (!curr || curr != addrs[i - j] || curr->data != (void *)(long)(i - j))
 			{
-				result = false;
+				ok = false;
 				break;
 			}
 			curr = curr->next;
 		}
-		fprintf(stderr, "[%d]: %d nodes\n", i, i + 1);
-		PRINT_RESULT_EXT(is_addr_ok && is_data_ok, &result,
-			"expected head to be %p (data: %p), got %p (data: %p)\t[ADDR: %s, DATA: %s]. j=%d",
-			all_addresses[i], i, list, list ? list->data : NULL, 
-			is_addr_ok ? "OK" : "FAILED",
-			is_data_ok ? "OK" : "FAILED",
-			j
-		);
+		char desc[64];
+		snprintf(desc, sizeof(desc), "push_front iteration %d", i);
+		RUN_SUBTEST(desc, ok, &result, "head/data mismatch");
 	}
-	return (true);
+	free(addrs);
+	free_list(&list);
+	return result;
 }
 
 bool	test_list_size(void)
 {
-	t_list	*list;
-	t_list	*last;
-	t_list	*node;
-	bool	result;
-	int		curr;
+	t_list	*list = NULL;
+	t_list	*last = NULL;
+	bool	result = true;
 
-	result = true;
-	last = NULL;
-	list = NULL;
-	for (int i = 0; i < 10; i++){
-		node = calloc(1, sizeof(t_list));
-		node->data = (void *)i;
-		if (last){
-			last->next = node;
-		}
-		if (!list){
-			list = node;
-		}
-		last = node;
-		fprintf(stderr, "[%d]: %d nodes\n", i, i + 1);
-		curr = ft_list_size(list);
-		PRINT_RESULT_EXT(curr == i + 1, &result,
-			"expected %d, got %d", i + 1, curr
-		);
-	}
-	return (result);
-}
-
-t_cmp_fn	foo(const void *a, const void *b)
-{
-	return (a - b);
-}
-
-bool	test_list_sort(void)
-{
-	const int		values[] = {5, 4, 2, 1, 0};
-	const int		tot_size = sizeof(values) / sizeof(values[0]);
-	t_list			*list;
-	t_list			*last;
-	t_list			*node;
-	t_cmp_fn		*function;
-	bool			result;
-
-	result = true;
-	list = NULL;
-	last = NULL;
-	int i;
-	for (i = 0; i < tot_size; i++)
+	for (int i = 0; i < 10; i++)
 	{
-		node = calloc(1, sizeof(t_list));
-		node->data = (void *)values[i];
+		t_list *node = calloc(1, sizeof(t_list));
+		node->data = (void *)(long)i;
 		if (last)
 			last->next = node;
 		if (!list)
 			list = node;
 		last = node;
-	}
-	function = foo;
-	ft_list_sort(&list, function);
 
-	fprintf(stderr, "[0]: {");
-	for (int i = 0; i < 10; i++){
-		fprintf(stderr, "%d", values[i]);
-		if (i < 9)
-		fprintf(stderr, ", ");
+		int size = ft_list_size(list);
+		char desc[64];
+		snprintf(desc, sizeof(desc), "list_size iteration %d", i);
+		RUN_SUBTEST(desc, size == i + 1, &result, "expected %d, got %d",
+			i + 1, size);
 	}
-	fprintf(stderr, "}\n");
-
-	int prev = (int)list->data;
-	bool is_ok = true;
-	t_list *curr = list;
-	for (int i = 0; i < 10; i++){
-		int value = (int)curr->data;
-		is_ok = value >= prev;
-		prev = value;
-		curr = curr->next;
-
-	}
-	PRINT_RESULT_EXT(is_ok, &result,
-		"Expected list to be sorted, got unsorted"
-	);
-	return (true);
+	free_list(&list);
+	return result;
 }
 
-bool	test_list_remove_if(void)
-{
-	return (true);
-}
+// ------------------ TEST REGISTRATION ------------------
 
-
-//------------------------------------------------------------------------------
-
-static const char		*g_all_fn_names[] = {
-	FT_STRLEN, FT_STRCPY, FT_STRCMP, FT_WRITE, FT_READ, FT_STRDUP,
-	FT_ATOI_BASE, FT_LIST_PUSH_FRONT, FT_LIST_SIZE, FT_LIST_SORT,
-	FT_LIST_REMOVE_IF
+static t_test_entry g_tests[] = {
+	{"test_strlen", test_strlen},
+	{"test_strcpy", test_strcpy},
+	{"test_strcmp", test_strcmp},
+	{"test_write", test_write},
+	{"test_read", test_read},
+	{"test_strdup", test_strdup},
+	{"test_list_push_front", test_list_push_front},
+	{"test_list_size", test_list_size},
 };
 
-static const t_fn_ref	g_all_fn_refs[] = {
-	test_strlen, test_strcpy, test_strcmp, test_write, test_read, test_strdup,
-	test_atoi_base, test_list_push_front, test_list_size, test_list_sort,
-	test_list_remove_if
-};
+// ------------------ TEST RUNNER ------------------
 
-
-static int	run_case(char *s)
+static bool	run_test(const char *name)
 {
-	const int	tot_size = sizeof(g_all_fn_names) / sizeof(g_all_fn_names[0]);
-	bool		fail;
-	int			i;
-	bool		found;
+	int		total = sizeof(g_tests) / sizeof(g_tests[0]);
+	bool	found = false;
+	bool	overall = true;
 
-	found = false;
-	fail = false;
-	i = -1;
-	while (++i < tot_size)
+	for (int i = 0; i < total; i++)
 	{
-		if (!s || !strcmp(s, g_all_fn_names[i]))
+		if (!name || strcmp(name, g_tests[i].name) == 0)
 		{
-			printf("Running test: %s\n", g_all_fn_names[i]);
-			fail |= !(g_all_fn_refs[i])();
 			found = true;
-			fprintf(stderr, "Press ENTER to continue...");
+			fprintf(stderr, "\n=== Running %s ===\n", g_tests[i].name);
+			overall &= g_tests[i].fn();
+			fprintf(stderr, "\nPress ENTER to continue...");
 			getchar();
 		}
 	}
 	if (!found)
-	{
-		write(2, "Invalid argument ", 17);
-		write(2, s, strlen(s));
-		write(2, " provided. Provide a valid name.\n", 33);
-	}
-	return (fail);
+		fprintf(stderr, "Invalid test name: '%s'\n", name);
+	return overall;
 }
 
-int	main(int argc, char **argv)
-{
-	int	i;
-	int	result;
+// ------------------ MAIN ------------------
 
+int main(int argc, char **argv)
+{
+	bool	result;
 	if (argc == 1)
-		return (run_case(NULL));
-	i = 0;
-	result = 0;
-	while (++i < argc)
-	{
-		result = run_case(argv[i]);
-	}
-	return (result);
+		return run_test(NULL) ? 0 : 1;
+	result = true;
+	for (int i = 1; i < argc; i++)
+		result &= run_test(argv[i]);
+	return result ? 0 : 1;
 }

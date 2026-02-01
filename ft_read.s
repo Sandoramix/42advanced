@@ -21,7 +21,7 @@ ft_read:
 	neg rax
 	mov rdi, rax
 	call __errno_location
-	mov [rax], edi
+	mov [rax], rdi
 	mov rax, -1
 	.end:
 		ret

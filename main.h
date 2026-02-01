@@ -30,11 +30,11 @@ bool	test_write(void);
 bool	test_read(void);
 bool	test_strdup(void);
 
-bool	test_atoi_base(void);
+// bool	test_atoi_base(void);
 bool	test_list_push_front(void);
 bool	test_list_size(void);
-bool	test_list_sort(void);
-bool	test_list_remove_if(void);
+// bool	test_list_sort(void);
+// bool	test_list_remove_if(void);
 
 typedef bool	(*t_fn_ref)(void);
 

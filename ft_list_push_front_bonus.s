@@ -1,6 +1,6 @@
 ; typedef struct s_list {
-; 	void *data;
-; 	struct s_list *next;
+; 	void *data;				// 8 bytes
+; 	struct s_list *next;	// 8 bytes
 ; } t_list;
 
 

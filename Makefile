@@ -9,8 +9,7 @@ SRC = ./ft_read.s \
 	./ft_write.s
 
 SRC_BONUS = ./ft_list_push_front_bonus.s \
-	./ft_list_size_bonus.s \
-	./ft_list_sort_bonus.s
+	./ft_list_size_bonus.s
 
 AS=nasm
 ASFLAGS= -g -f elf64 $(ASDEBUGFLAGS)
@@ -30,12 +29,14 @@ clean:
 	$(RM) $(OBJ) $(OBJ_BONUS)
 
 fclean: clean
-	$(RM) $(NAME)
+	$(RM) $(NAME) $(TEST_NAME)
 
 re: fclean all
 
+CC=clang
+CFLAGS+= -w -g
 $(TEST_NAME): $(NAME)
-	$(CC) $(CFLAGS) -w -g -I. main.c -o $(TEST_NAME) -L. -lasm
+	$(CC) $(CFLAGS) -I. main.c -L. -lasm -o $(TEST_NAME)
 
 debug: ASDEBUGFLAGS=-gdwarf
 debug: fclean bonus
