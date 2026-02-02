@@ -1,5 +1,4 @@
-
-
+; https://web.stanford.edu/class/cs107/resources/x86-64-reference.pdf
 
 ; size_t ft_strlen(char *str);
 ; RDI: str

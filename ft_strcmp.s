@@ -1,3 +1,4 @@
+; https://web.stanford.edu/class/cs107/resources/x86-64-reference.pdf
 
 ; int ft_strcmp(const char *s1, const char *s2);
 ; RDI: s1

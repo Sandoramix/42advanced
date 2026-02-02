@@ -1,3 +1,5 @@
+; https://web.stanford.edu/class/cs107/resources/x86-64-reference.pdf
+
 ; typedef struct s_list {
 ; 	void *data;				// 8 bytes
 ; 	struct s_list *next;	// 8 bytes

@@ -1,3 +1,5 @@
+; https://web.stanford.edu/class/cs107/resources/x86-64-reference.pdf
+
 ; char *ft_strcpy(char *dst, const char *src);
 ; RDI: dst
 ; RSI: src

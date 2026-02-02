@@ -1,3 +1,5 @@
+; https://web.stanford.edu/class/cs107/resources/x86-64-reference.pdf
+
 ; void ft_read(int fd, void *buf, size_t count);
 ; RDI: fd
 ; RSI: buf
