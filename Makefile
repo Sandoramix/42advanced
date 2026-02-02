@@ -1,5 +1,5 @@
 NAME=libasm.a
-TEST_NAME=libasm
+TESTPROG_NAME=libasm
 
 SRC = ./ft_read.s \
 	./ft_strcmp.s \
@@ -29,18 +29,18 @@ clean:
 	$(RM) $(OBJ) $(OBJ_BONUS)
 
 fclean: clean
-	$(RM) $(NAME) $(TEST_NAME)
+	$(RM) $(NAME) $(TESTPROG_NAME)
 
 re: fclean all
 
 CC=clang
 CFLAGS+= -w -g
-$(TEST_NAME): $(NAME)
-	$(CC) $(CFLAGS) -I. main.c -L. -lasm -o $(TEST_NAME)
+$(TESTPROG_NAME): $(NAME)
+	$(CC) $(CFLAGS) -I. main.c -L. -lasm -o $(TESTPROG_NAME)
 
 debug: ASDEBUGFLAGS=-gdwarf
 debug: fclean bonus
 
-test: debug $(TEST_NAME)
+test: debug $(TESTPROG_NAME)
 
 .PHONY: all clean fclean re
