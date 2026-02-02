@@ -9,9 +9,12 @@
 ; syscall returns negative value (on RAX register) on error which is errno but negative
 ; so we need to store it in the errno location
 
+; syscall 1: write
+; https://blog.rchapman.org/posts/Linux_System_Call_Table_for_x86_64/
+
 section .text
 	global ft_write
-	extern __errno_location
+	extern __errno_location	; function that returns the address of errno
 
 ft_write:
 	mov rax, 1; 1-> write

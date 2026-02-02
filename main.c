@@ -240,14 +240,14 @@ bool	test_list_size(void)
 // ------------------ TEST REGISTRATION ------------------
 
 static t_test_entry g_tests[] = {
-	{"test_strlen", test_strlen},
-	{"test_strcpy", test_strcpy},
-	{"test_strcmp", test_strcmp},
-	{"test_write", test_write},
-	{"test_read", test_read},
-	{"test_strdup", test_strdup},
-	{"test_list_push_front", test_list_push_front},
-	{"test_list_size", test_list_size},
+	{"ft_strlen", test_strlen},
+	{"ft_strcpy", test_strcpy},
+	{"ft_strcmp", test_strcmp},
+	{"ft_write", test_write},
+	{"ft_read", test_read},
+	{"ft_strdup", test_strdup},
+	{"ft_list_push_front", test_list_push_front},
+	{"ft_list_size", test_list_size},
 };
 
 // ------------------ TEST RUNNER ------------------

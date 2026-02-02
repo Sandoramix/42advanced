@@ -15,7 +15,7 @@ ft_list_size:
 		cmp rdi, 0
 			je .end
 		inc rax
-		mov rdi, [rdi + 8]
+		mov rdi, [rdi + 8];	list = list->next (8 bytes from start)
 		jmp .loop
 	.end:
 		ret

@@ -20,7 +20,7 @@ ft_strdup:
 	inc rdi			; RDI: len + 1
 	mov rdx, rdi	; RDX: len + 1
 	push rdx		; STACK[1]: len + 1
-	call malloc; RAX: malloc(len + 1)
+	call malloc		; RAX: malloc(len + 1)
 	cmp rax, 0		; malloc(len + 1) == NULL
 		je .end
 	mov rdi, rax	; RDI: malloc(len + 1)

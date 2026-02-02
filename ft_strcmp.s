@@ -5,7 +5,7 @@
 
 ; RAX: return value
 
-;The BSS (Block Started Symbol) section: used for declaring variables/functions (with uninitialized data).
+; The BSS (Block Started Symbol) section: used for declaring program instructions.
 ; global: exposes the variable on global scope
 section .text
 	global ft_strcmp
@@ -14,11 +14,9 @@ ft_strcmp:
 	xor rax, rax
 	xor rbx, rbx
 	xor rcx, rcx
-	xor bl, bl
-	xor cl, cl
 	.loop:
-		mov bl, [rdi + rax]
-		mov cl, [rsi + rax]
+		mov bl, [rdi + rax]	;s1[rax]
+		mov cl, [rsi + rax]	;s2[rax]
 		cmp bl, cl
 			jne .end
 		cmp bl, 0

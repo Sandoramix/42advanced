@@ -6,13 +6,22 @@
 
 ; RAX: return value
 
-;The BSS (Block Started Symbol) section: used for declaring variables/functions (with uninitialized data).
+; The BSS (Block Started Symbol) section: used for declaring program instructions.
 ; global: exposes the variable on global scope
 section .text
 	global ft_strlen
 
+; XOR TABLE
+;-----------;
+;   | 0 | 1 ;
+;-----------;
+; 0 | 0 | 1 ;
+;-----------;
+; 1 | 1 | 0 ;
+;-----------;
+
 ft_strlen:
-	; set rax to 0
+	; set rax to 0 (exclusive OR operator)
 	xor	rax, rax
 	; check if str is null
 	cmp	rdi, 0

@@ -35,7 +35,7 @@ ft_list_push_front:
 		je .end
 	pop rdx						; RDX = begin_list
 	mov rcx, [rdx]				; RCX = *begin_list
-	mov [rax + 8], rcx
-	mov [rdx], rax
+	mov [rax + 8], rcx			; new node->next = *begin_list
+	mov [rdx], rax				; *begin_list = new node
 	.end:
 	ret
