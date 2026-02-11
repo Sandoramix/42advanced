@@ -7,9 +7,14 @@ The nm command reveals valuable information about the symbols—such as function
 
 ## Requirements
 
-Base requirements: create the `nm` executable that works as the original.
+### Base requirements
 
-Work with ELF binaries, handle **x86_32**, **x86_64**, **object files** and _shared\_libraries_ (**\*.so**)
+Create the `ft_nm` executable that works very similarly to the original `nm` command. It has to:
+
+- Coded in C
+- Be able to handle **x86_32**, **x86_64**, **object files** and _shared\_libraries_ (**\*.so**)
+- Output similarly to the original `nm` command on the symbols list (order, offest, padding, etc.). Other aspects can have some small differences (filenames, etc.).
+- Must behave like the system nm on every other aspect. The errors have to be handled without crashing the program (Segmentation fault, bus error, double free, etc).
 
 ### Mandatory
 
