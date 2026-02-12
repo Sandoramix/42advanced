@@ -6,7 +6,9 @@ LIBS=
 CFLAGS=-Wall -Wextra -Werror $(INCLUDES)
 
 SRC_MAIN=./src/main.c
-SRC_COMMON=
+SRC_COMMON=./src/nm/getfilestat.c \
+	./src/nm/help_message.c \
+	./src/nm/identify_elf_format.c
 
 SRC_MANDATORY=./src/mandatory/nm.c
 SRC_BONUS=./src/bonus/nm_bonus.c
@@ -32,6 +34,8 @@ fclean: clean
 
 re: fclean all
 
+test: re
+	./$(NAME) $(NAME)
 
 .PHONY: all clean fclean re
 # .SILENT:
