@@ -1,20 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   nm_bonus.c                                         :+:      :+:    :+:   */
+/*   help_message.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/11 14:31:16 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/13 15:21:11 by odudniak         ###   ########.fr       */
+/*   Created: 2026/02/12 07:43:42 by odudniak          #+#    #+#             */
+/*   Updated: 2026/02/13 16:30:49 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
 
-void	ft_nm(t_ft_nm *nm)
+void	nm_help_message(t_ft_nm *nm)
 {
-	fprintf(stderr, "BONUS NM CALLED\n");
-	if (nm->options.bad > 0)
-		return (nm_help_message(nm), exit(EXIT_FAILURE));
+	write(STDERR_FILENO, "Usage: ", 7);
+	write(STDERR_FILENO, nm->progname, ft_strlen(nm->progname));
+	write(STDERR_FILENO, " [file(s)]\n", 11);
+	write(STDERR_FILENO, " List symbols in [file(s)] "
+		"(a.out by default).\n", 47);
 }

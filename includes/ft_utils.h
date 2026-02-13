@@ -1,20 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   nm_bonus.c                                         :+:      :+:    :+:   */
+/*   ft_utils.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/11 14:31:16 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/13 15:21:11 by odudniak         ###   ########.fr       */
+/*   Created: 2026/02/13 13:32:42 by odudniak          #+#    #+#             */
+/*   Updated: 2026/02/13 14:34:56 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_nm.h"
+#ifndef FT_UTILS_H
+# define FT_UTILS_H
 
-void	ft_nm(t_ft_nm *nm)
-{
-	fprintf(stderr, "BONUS NM CALLED\n");
-	if (nm->options.bad > 0)
-		return (nm_help_message(nm), exit(EXIT_FAILURE));
-}
+# include <stddef.h>
+
+int		ft_strcmp(const char *s1, const char *s2);
+size_t	ft_strlen(const char *s);
+
+#endif

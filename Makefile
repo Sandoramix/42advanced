@@ -3,15 +3,22 @@ NAME:=ft_nm
 CC=cc
 INCLUDES=-I./includes
 LIBS=
-CFLAGS=-Wall -Wextra -Werror $(INCLUDES)
+CFLAGS=-Wall -Wextra -Werror $(INCLUDES) -g
 
 SRC_MAIN=./src/main.c
-SRC_COMMON=./src/nm/getfilestat.c \
-	./src/nm/help_message.c \
-	./src/nm/identify_elf_format.c
+SRC_COMMON=./src/nm/parsing/identify_option.c \
+	./src/nm/parsing/parse_argv.c \
+	./src/nm/get_known_options.c \
+	./src/nm/getfilestat.c \
+	./src/nm/identify_elf_format.c \
+	./src/utils/ft_strcmp.c \
+	./src/utils/ft_strlen.c
 
-SRC_MANDATORY=./src/mandatory/nm.c
-SRC_BONUS=./src/bonus/nm_bonus.c
+SRC_MANDATORY=./src/mandatory/nm.c \
+	./src/mandatory/help_message.c
+
+SRC_BONUS=./src/bonus/nm_bonus.c \
+	./src/bonus/help_message_bonus.c
 
 SRC=$(SRC_COMMON)
 
@@ -33,6 +40,7 @@ fclean: clean
 	rm -f $(NAME)
 
 re: fclean all
+re-bonus: fclean bonus
 
 test: re
 	./$(NAME) $(NAME)

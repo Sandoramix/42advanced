@@ -6,7 +6,7 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 14:28:59 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/12 07:42:24 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/02/13 16:45:23 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,16 @@
  */
 int	main(int argc, char **argv)
 {
-	ft_nm(argc, argv);
+	t_ft_nm	nm;
+
+	nm = (t_ft_nm){
+		.progname = argv[0],
+		.argc = argc - 1,
+		.argv = argv,
+		.options = (t_nm_option){0}
+	};
+	nm.options.value = parse_argv(nm.argv, &nm.options.valid, &nm.options.bad);
+	nm.argc = argc - 1 - nm.options.valid;
+	ft_nm(&nm);
 	return (0);
 }

@@ -1,20 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   nm_bonus.c                                         :+:      :+:    :+:   */
+/*   ft_strlen.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/11 14:31:16 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/13 15:21:11 by odudniak         ###   ########.fr       */
+/*   Created: 2026/02/13 14:34:04 by odudniak          #+#    #+#             */
+/*   Updated: 2026/02/13 14:34:41 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_nm.h"
+#include <stddef.h>
 
-void	ft_nm(t_ft_nm *nm)
+size_t	ft_strlen(const char *s)
 {
-	fprintf(stderr, "BONUS NM CALLED\n");
-	if (nm->options.bad > 0)
-		return (nm_help_message(nm), exit(EXIT_FAILURE));
+	size_t	i;
+
+	if (!s)
+		return (0);
+	i = 0;
+	while (s[i])
+		i++;
+	return (i);
 }
