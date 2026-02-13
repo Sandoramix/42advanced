@@ -6,7 +6,7 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 14:31:32 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/13 17:40:11 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/02/13 17:49:55 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ typedef struct s_ft_nm
 }	t_ft_nm;
 
 void				ft_nm(t_ft_nm *nm);
+void				nm_cycle(t_ft_nm *nm);
 
 t_option_enum		parse_argv(char **argv, int *valid_opts, int *bad_opts);
 

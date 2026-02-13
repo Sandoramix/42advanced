@@ -11,6 +11,7 @@ SRC_COMMON=./src/main.c \
 	./src/nm/get_known_options.c \
 	./src/nm/getfilestat.c \
 	./src/nm/identify_elf_format.c \
+	./src/nm/nm_cycle.c \
 	./src/utils/ft_strcmp.c \
 	./src/utils/ft_strlen.c
 
