@@ -6,7 +6,7 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 08:11:22 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/12 08:11:43 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/02/13 17:39:23 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ t_stat	nm_getfilestat(const char *filename, int *fd)
 	if (target_fd == -1)
 	{
 		*fd = -1;
-		return (perror("Error opening file"), file_stat);
+		return (file_stat);
 	}
 	if (fstat(target_fd, &file_stat) == -1)
 	{

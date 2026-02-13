@@ -6,7 +6,7 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 14:31:32 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/13 17:31:50 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/02/13 17:40:11 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ typedef struct s_ft_nm
 	char		**argv;
 	t_nm_option	options;
 
+	bool		bad_file_passed;
 }	t_ft_nm;
 
 void				ft_nm(t_ft_nm *nm);
