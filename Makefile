@@ -5,8 +5,8 @@ INCLUDES=-I./includes
 LIBS=
 CFLAGS=-Wall -Wextra -Werror $(INCLUDES) -g
 
-SRC_MAIN=./src/main.c
-SRC_COMMON=./src/nm/parsing/identify_option.c \
+SRC_COMMON=./src/main.c \
+	./src/nm/parsing/identify_option.c \
 	./src/nm/parsing/parse_argv.c \
 	./src/nm/get_known_options.c \
 	./src/nm/getfilestat.c \
@@ -31,7 +31,7 @@ bonus: SRC:=$(SRC) $(SRC_BONUS)
 bonus: $(NAME)
 
 $(NAME): $(SRC)
-	$(CC) $(CFLAGS) -o $(NAME) $(SRC_MAIN) $(SRC) $(LIBS)
+	$(CC) $(CFLAGS) -o $(NAME) $(SRC) $(LIBS)
 	@echo "\e[1;33m$(NAME) \e[1;32mcompiled successfully \e[1;35m($(MODE))\e[0m"
 
 clean:

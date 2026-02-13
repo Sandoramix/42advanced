@@ -6,7 +6,7 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 15:18:18 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/13 15:18:20 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/02/13 17:16:47 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ The options are:
 @param UNDEFINED_ONLY(4) `-u` | `--undefined-only`
 @param REVERSE_SORT(8) `-r` | `--reverse-sort`
 @param NO_SORT(16) `-p` | `--no-sort`
+@param HELP(32) `-h` | `--help`
  */
 typedef enum e_nm_option
 {
@@ -29,7 +30,8 @@ typedef enum e_nm_option
 	NMFLAG_EXTERN_ONLY = 1 << 1,
 	NMFLAG_UNDEFINED_ONLY = 1 << 2,
 	NMFLAG_REVERSE_SORT = 1 << 3,
-	NMFLAG_NO_SORT = 1 << 4
+	NMFLAG_NO_SORT = 1 << 4,
+	NMFLAG_HELP = 1 << 5
 }	t_option_enum;
 
 typedef struct s_option_info

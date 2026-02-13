@@ -6,17 +6,27 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 14:28:59 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/13 16:45:23 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/02/13 17:19:58 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
 
+static void	remove_progname_from_argv(char **argv)
+{
+	int	i;
+
+	i = -1;
+	while (argv[++i])
+		argv[i] = argv[i + 1];
+	argv[i] = NULL;
+}
+
 /**
  * This is the entry point of the program.
  * `ft_nm` is the main function of the program.
  * Based of the compilation type (mandatory or bonus)
- * it calls the appropriate function (same name)
+ * it calls the appropriate function `ft_nm` (same name)
  * from the `mandatory` or `bonus` folder respectively.
  */
 int	main(int argc, char **argv)
@@ -29,8 +39,7 @@ int	main(int argc, char **argv)
 		.argv = argv,
 		.options = (t_nm_option){0}
 	};
-	nm.options.value = parse_argv(nm.argv, &nm.options.valid, &nm.options.bad);
-	nm.argc = argc - 1 - nm.options.valid;
+	remove_progname_from_argv(nm.argv);
 	ft_nm(&nm);
 	return (0);
 }

@@ -6,21 +6,11 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 13:04:14 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/13 16:42:50 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/02/13 17:14:22 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
-
-static void	remove_progname_from_argv(char **argv)
-{
-	int	i;
-
-	i = -1;
-	while (argv[++i])
-		argv[i] = argv[i + 1];
-	argv[i] = NULL;
-}
 
 static bool	traslate(char **argv, int from, int to)
 {
@@ -43,7 +33,6 @@ t_option_enum	parse_argv(char **argv, int *valid_opts, int *bad_opts)
 	int				i;
 	int				new_idx;
 
-	remove_progname_from_argv(argv);
 	*valid_opts = 0;
 	*bad_opts = 0;
 	i = -1;
@@ -62,5 +51,6 @@ t_option_enum	parse_argv(char **argv, int *valid_opts, int *bad_opts)
 		result |= opt;
 		(*valid_opts)++;
 	}
-	return (traslate(argv, i, new_idx++), result);
+	traslate(argv, i, new_idx++);
+	return (result);
 }

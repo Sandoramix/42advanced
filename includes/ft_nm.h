@@ -6,7 +6,7 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 14:31:32 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/13 16:26:28 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/02/13 17:31:50 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,34 @@
 
 typedef struct stat	t_stat;
 
+/**
+ * @brief Runtime context of the ft_nm program.
+ *
+ * This structure centralizes all data required during execution.
+ * It is initialized in main() and passed to ft_nm(), in both
+ * mandatory and bonus builds.
+ *
+ * Members:
+ *
+ * - `progname`
+ *     Name used to invoke the program (argv[0]).
+ *
+ * - `argc`
+ *     Number of arguments provided to the program, excluding
+ *     the program name.
+ *     In `bonus mode`, parsed option arguments are excluded from
+ *     this count.
+ *
+ * - `argv`
+ *     Array of arguments passed to the program. The program
+ *     name (argv[0]) is not included.
+ *     In `bonus mode`, option arguments are removed
+ *     after parsing.
+ *
+ * - `options`
+ *     Structure storing parsed option flags and metadata.
+ *     This structure is only used in `bonus mode`.
+ */
 typedef struct s_ft_nm
 {
 	char		*progname;

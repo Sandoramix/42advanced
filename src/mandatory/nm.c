@@ -6,7 +6,7 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 14:42:27 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/13 15:18:48 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/02/13 17:34:30 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	ft_nm(t_ft_nm *nm)
 	int				file_format;
 
 	fprintf(stderr, "MANDATORY NM CALLED\n");
-	if (nm->argc != 2 || nm->options.valid > 0 || nm->options.bad > 0)
+	if (nm->options.valid > 0 || nm->options.bad > 0)
 		return (nm_help_message(nm), exit(EXIT_FAILURE));
 	file_stat = nm_getfilestat(nm->argv[1], &target_fd);
 	if (target_fd == -1)
@@ -39,7 +39,6 @@ void	ft_nm(t_ft_nm *nm)
 		fprintf(stderr, "ELF FORMAT: %s\n", file_format == ELFCLASS32 ? "32-bit"
 		: file_format == ELFCLASS64 ? "64-bit" : "unknown");
 	}
-
 	munmap(target_mapping, file_stat.st_size);
 	close(target_fd);
 	if (file_format == ELFCLASSNONE)

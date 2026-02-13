@@ -6,7 +6,7 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 14:39:19 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/13 15:17:00 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/02/13 17:17:38 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ const t_option_info	*get_known_options(void)
 		NMFLAG_REVERSE_SORT},
 	{"p", "no-sort", "Do not sort the symbols",
 		NMFLAG_NO_SORT},
+	{"h", "help", "Display this information",
+		NMFLAG_HELP},
 	{NULL, NULL, NULL, 0}
 	};
 

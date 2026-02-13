@@ -6,7 +6,7 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 13:46:56 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/13 15:13:49 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/02/13 17:15:08 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static t_option_enum	identify_short_option(const char opt)
 	size_t				i;
 
 	i = 0;
-	while (options[i].short_name)
+	while (options[i].value)
 	{
 		if (!ft_strcmp(options[i].short_name, opt_str))
 			return (options[i].value);
@@ -37,7 +37,7 @@ static t_option_enum	identify_extended_option(const char *opt)
 		return (NMFLAG_NONE);
 	i = 0;
 	opt = &opt[2];
-	while (options[i].long_name)
+	while (options[i].value)
 	{
 		if (!ft_strcmp(options[i].long_name, opt))
 			return (options[i].value);
