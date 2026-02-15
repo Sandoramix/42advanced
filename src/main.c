@@ -6,7 +6,7 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 14:28:59 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/13 17:19:58 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/02/15 14:43:57 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,9 @@ static void	remove_progname_from_argv(char **argv)
  */
 int	main(int argc, char **argv)
 {
-	t_ft_nm	nm;
+	t_nm	nm;
 
-	nm = (t_ft_nm){
+	nm = (t_nm){
 		.progname = argv[0],
 		.argc = argc - 1,
 		.argv = argv,

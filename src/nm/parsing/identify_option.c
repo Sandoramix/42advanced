@@ -6,7 +6,7 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 13:46:56 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/13 17:15:08 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/02/15 16:28:25 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static t_option_enum	identify_short_option(const char opt)
 {
-	const t_option_info	*options = get_known_options();
+	const t_option_info	*options = get_help_options();
 	const char			opt_str[2] = {opt, 0};
 	size_t				i;
 
@@ -30,7 +30,7 @@ static t_option_enum	identify_short_option(const char opt)
 
 static t_option_enum	identify_extended_option(const char *opt)
 {
-	const t_option_info	*options = get_known_options();
+	const t_option_info	*options = get_help_options();
 	size_t				i;
 
 	if (!opt || opt[0] != '-' || opt[1] != '-' || !opt[2])

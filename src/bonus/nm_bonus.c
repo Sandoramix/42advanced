@@ -6,13 +6,13 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 14:31:16 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/13 17:50:24 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/02/15 14:43:57 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
 
-void	ft_nm(t_ft_nm *nm)
+void	ft_nm(t_nm *nm)
 {
 	nm->options.value = parse_argv(nm->argv,
 			&nm->options.valid, &nm->options.bad);

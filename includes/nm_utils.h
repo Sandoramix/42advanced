@@ -1,17 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   nm_options.h                                       :+:      :+:    :+:   */
+/*   nm_utils.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/13 15:18:18 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/13 17:16:47 by odudniak         ###   ########.fr       */
+/*   Created: 2026/02/13 13:32:42 by odudniak          #+#    #+#             */
+/*   Updated: 2026/02/15 18:06:24 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef NM_OPTIONS_H
-# define NM_OPTIONS_H
+#ifndef NM_UTILS_H
+# define NM_UTILS_H
+
+# include <stddef.h>
+# include <sys/stat.h>
+# include <elf.h>
+# include <stdint.h>
+# include <stdbool.h>
+
+typedef struct stat	t_stat;
 
 /**
 Options provided by the user to the program.
@@ -54,5 +62,30 @@ typedef struct s_nm_option
 	int					valid;
 	int					bad;
 }	t_nm_option;
+
+typedef struct s_nm_symbol
+{
+	char	*name;
+	uint64_t		offset;
+	char			type;
+}	t_nm_symbol;
+
+/**
+ * Structure that holds the information about the target file
+ * to be processed by the program.
+ * It is used by the `nm_cycle` function.
+ * @param fd File descriptor of the target file
+ * @param mapping Memory mapping of the target file (mmap)
+ * @param stat Structure that holds the information about the target file
+ * @param format Format of the target file
+ * (`ELFCLASS32`, `ELFCLASS64` or `ELFCLASSNONE`)
+ */
+typedef struct s_nm_target
+{
+	int				fd;
+	unsigned char	*mapping;
+	t_stat			stat;
+	int				format;
+}	t_nm_target;
 
 #endif

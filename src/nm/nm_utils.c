@@ -1,24 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   nm.c                                               :+:      :+:    :+:   */
+/*   nm_utils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/11 14:42:27 by odudniak          #+#    #+#             */
+/*   Created: 2026/02/15 13:34:00 by odudniak          #+#    #+#             */
 /*   Updated: 2026/02/15 14:43:57 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
 
-void	ft_nm(t_nm *nm)
+void	nm_set_file_error(t_nm *nm)
 {
-	int	i;
-
-	fprintf(stderr, "MANDATORY NM CALLED\n");
-	if (nm->options.valid > 0 || nm->options.bad > 0)
-		return (nm_help_message(nm), exit(EXIT_FAILURE));
-	i = -1;
-	nm_cycle(nm);
+	nm->bad_file_passed = true;
 }

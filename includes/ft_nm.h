@@ -6,7 +6,7 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 14:31:32 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/13 17:49:55 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/02/15 17:37:31 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,13 @@
 # include <stdlib.h>
 # include <string.h>
 # include <sys/mman.h>
-# include <sys/stat.h>
 # include <fcntl.h>
-# include <elf.h>
 # include <stdbool.h>
 # include <errno.h>
 
-# include "ft_utils.h"
-# include "nm_options.h"
-
-typedef struct stat	t_stat;
+# include "nm_utils.h"
+# include "nm_elf32.h"
+# include "nm_elf64.h"
 
 /**
  * @brief Runtime context of the ft_nm program.
@@ -65,19 +62,36 @@ typedef struct s_ft_nm
 	t_nm_option	options;
 
 	bool		bad_file_passed;
-}	t_ft_nm;
+}	t_nm;
 
-void				ft_nm(t_ft_nm *nm);
-void				nm_cycle(t_ft_nm *nm);
+void				ft_nm(t_nm *nm);
+void				nm_help_message(t_nm *nm);
 
+// ./src/nm
+const t_option_info	*get_help_options(void);
+void				nm_cycle(t_nm *nm);
+void				nm_set_file_error(t_nm *nm);
+
+// ./src/nm/elf32
+bool				nm_run_32(t_nm *nm, t_nm_target *t, Elf32_Ehdr *ehdr);
+
+// ./src/nm/elf64
+bool				nm_run_64(t_nm *nm, t_nm_target *t, Elf64_Ehdr *ehdr);
+
+// ./src/nm/parsing
+t_option_enum		nm_identify_option(const char *opt);
 t_option_enum		parse_argv(char **argv, int *valid_opts, int *bad_opts);
 
-t_option_enum		nm_identify_option(const char *opt);
-
-t_stat				nm_getfilestat(const char *filename, int *fd);
-void				nm_help_message(t_ft_nm *nm);
-int					nm_identify_elf_format(unsigned char *e_indent);
-
-const t_option_info	*get_known_options(void);
-
+// ./src/utils
+bool				elf_add_symbol(t_nm_symbol **sym_head, size_t *sym_size,
+						t_nm_symbol sym);
+int					elf_get_format(const char *file_path,
+						unsigned char *e_ident);
+int					ft_strcmp(const char *s1, const char *s2);
+size_t				ft_strlen(const char *s);
+void				nm_cleanup_file_mapping(t_stat *stat, int fd,
+						void **target_mapping);
+t_stat				nm_get_file_stat(const char *filename, int *fd);
+bool				nm_retrieve_file_mapping(t_nm *nm, t_stat *stat, int fd,
+						void **target_mapping);
 #endif

@@ -6,7 +6,7 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 07:43:42 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/13 15:20:47 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/02/15 16:28:25 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static void	show_known_options(void)
 {
-	const t_option_info	*options = get_known_options();
+	const t_option_info	*options = get_help_options();
 	int					pad;
 	int					i;
 	int					short_len;
@@ -39,7 +39,7 @@ static void	show_known_options(void)
 	}
 }
 
-void	nm_help_message(t_ft_nm *nm)
+void	nm_help_message(t_nm *nm)
 {
 	write(STDERR_FILENO, "Usage: ", 7);
 	write(STDERR_FILENO, nm->progname, ft_strlen(nm->progname));
