@@ -19,7 +19,7 @@ char	nm64_get_symbol_type(Elf64_Sym *sym, Elf64_Shdr *shdr)
 	if (sym->st_shndx == SHN_UNDEF)
 		return ('U');
 	if (sym->st_shndx == SHN_ABS)
-		return ('A');
+		return ('a');
 	section = &shdr[sym->st_shndx];
 	if (section->sh_type == SHT_NOBITS)
 		return ('B');
@@ -27,7 +27,7 @@ char	nm64_get_symbol_type(Elf64_Sym *sym, Elf64_Shdr *shdr)
 		return ('T');
 	if (section->sh_flags & SHF_WRITE)
 		return ('D');
-	return ('R');
+	return ('r');
 }
 
 bool	nm64_get_symbols(t_nm64_meta *meta, Elf64_Shdr *sym_hdr, Elf64_Sym *sym)
@@ -78,8 +78,35 @@ void	print_symbols(t_nm64_meta *meta)
 	while (i < meta->sym_count)
 	{
 		symbol = &meta->symbols[i];
-		fprintf(stderr, "%016lx: %c %s\n", symbol->offset, symbol->type,
-			symbol->name);
+		if (symbol->type == 'U')
+			fprintf(stderr, "%16c: U %s\n", ' ', symbol->name);
+		else
+			fprintf(stderr, "%016lx: %c %s\n", symbol->offset, symbol->type,
+				symbol->name);
+		i++;
+	}
+}
+
+void	nm64_sort_symbols(t_nm64_meta *meta)
+{
+	t_nm_symbol		tmp;
+	size_t			i;
+	size_t			j;
+
+	i = 0;
+	while (i < meta->sym_count)
+	{
+		j = i + 1;
+		while (j < meta->sym_count)
+		{
+			if (ft_strcmp(meta->symbols[i].name, meta->symbols[j].name) > 0)
+			{
+				tmp = meta->symbols[i];
+				meta->symbols[i] = meta->symbols[j];
+				meta->symbols[j] = tmp;
+			}
+			j++;
+		}
 		i++;
 	}
 }
@@ -106,6 +133,7 @@ bool	nm_run_64(t_nm *nm, t_nm_target *t, Elf64_Ehdr *ehdr)
 	};
 	if (!nm64_retrieve_symbols(t, &meta))
 		return (false);
+	nm64_sort_symbols(&meta);
 	print_symbols(&meta);
 	free(meta.symbols);
 	return (true);
