@@ -16,7 +16,8 @@ SRC_COMMON=./src/main.c \
 	./src/utils/elf_utils.c \
 	./src/utils/file_utils.c \
 	./src/utils/ft_strcmp.c \
-	./src/utils/ft_strlen.c
+	./src/utils/ft_strlen.c \
+	./src/utils/ft_tolower.c
 
 SRC_MANDATORY=./src/mandatory/nm.c \
 	./src/mandatory/help_message.c

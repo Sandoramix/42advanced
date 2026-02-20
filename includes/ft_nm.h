@@ -6,7 +6,7 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 14:31:32 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/15 17:37:31 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/02/20 15:47:16 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,7 @@ int					elf_get_format(const char *file_path,
 						unsigned char *e_ident);
 int					ft_strcmp(const char *s1, const char *s2);
 size_t				ft_strlen(const char *s);
+char				ft_tolower(char c);
 void				nm_cleanup_file_mapping(t_stat *stat, int fd,
 						void **target_mapping);
 t_stat				nm_get_file_stat(const char *filename, int *fd);

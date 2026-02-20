@@ -6,28 +6,37 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 13:58:34 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/15 18:06:33 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/02/20 15:45:05 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
 
+
+
 char	nm64_get_symbol_type(Elf64_Sym *sym, Elf64_Shdr *shdr)
 {
 	Elf64_Shdr	*section;
+	char		type;
 
+	type = 'R';
 	if (sym->st_shndx == SHN_UNDEF)
-		return ('U');
-	if (sym->st_shndx == SHN_ABS)
-		return ('a');
-	section = &shdr[sym->st_shndx];
-	if (section->sh_type == SHT_NOBITS)
-		return ('B');
-	if (section->sh_flags & SHF_EXECINSTR)
-		return ('T');
-	if (section->sh_flags & SHF_WRITE)
-		return ('D');
-	return ('r');
+		type = 'U';
+	else if (sym->st_shndx == SHN_ABS)
+		type = 'A';
+	else
+	{
+		section = &shdr[sym->st_shndx];
+		if (section->sh_type == SHT_NOBITS)
+			type = 'B';
+		if (section->sh_flags & SHF_EXECINSTR)
+			type = 'T';
+		if (section->sh_flags & SHF_WRITE)
+			type = 'D';
+	}
+	if (ELF64_ST_BIND(sym->st_info) == STB_LOCAL)
+		type = ft_tolower(type);
+	return (type);
 }
 
 bool	nm64_get_symbols(t_nm64_meta *meta, Elf64_Shdr *sym_hdr, Elf64_Sym *sym)
@@ -35,10 +44,11 @@ bool	nm64_get_symbols(t_nm64_meta *meta, Elf64_Shdr *sym_hdr, Elf64_Sym *sym)
 	const size_t	sym_len = sym_hdr->sh_size / sym_hdr->sh_entsize;
 	size_t			i;
 	t_nm_symbol		symbol;
+	Elf64_Shdr		*section;
 
 	meta->strtab = (char *)meta->target->mapping
 		+ (meta->shdr[sym_hdr->sh_link]).sh_offset;
-	i = -1;
+	i = 0;
 	while (++i < sym_len)
 	{
 		symbol = (t_nm_symbol){
@@ -46,6 +56,11 @@ bool	nm64_get_symbols(t_nm64_meta *meta, Elf64_Shdr *sym_hdr, Elf64_Sym *sym)
 			.type = nm64_get_symbol_type(&sym[i], meta->shdr),
 			.offset = sym[i].st_value,
 		};
+		if (sym[i].st_info == STT_SECTION)
+		{
+			section = &meta->shdr[sym[i].st_shndx];
+			symbol.name = meta->strtab + section->sh_name;
+		}
 		if (!elf_add_symbol(&meta->symbols, &meta->sym_count, symbol))
 			return (false);
 	}

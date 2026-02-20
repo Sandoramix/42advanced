@@ -6,7 +6,7 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 17:50:51 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/15 17:47:12 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/02/20 15:25:31 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,8 @@ void	nm_cycle(t_nm *nm)
 	i = -1;
 	while (nm->argv[++i])
 		nm_run(nm, nm->argv[i]);
+	if (i == 0)
+		nm_run(nm, "./a.out");
 	if (nm->bad_file_passed)
 		exit(EXIT_FAILURE);
 }
