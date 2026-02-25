@@ -6,7 +6,7 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 13:58:34 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/25 14:23:26 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/02/25 18:31:27 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,9 @@ bool	nm64_retrieve_symbols(t_nm_target *t, t_nm64_meta *meta)
 	{
 		if (meta->shdr[i].sh_type == SHT_SYMTAB)
 		{
+
+			meta->shstrtab = (char *)meta->target->mapping
+				+ meta->shdr[meta->ehdr->e_shstrndx].sh_offset;
 			return (nm64_get_symbols(meta, &meta->shdr[i],
 					(Elf64_Sym *)(t->mapping + meta->shdr[i].sh_offset)));
 		}

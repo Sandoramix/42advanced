@@ -6,7 +6,7 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 14:31:32 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/25 14:25:39 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/02/25 14:43:41 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,8 @@ typedef struct s_ft_nm
 
 void				ft_nm(t_nm *nm);
 void				nm_help_message(t_nm *nm);
+
+void				nm_print_symbol_line(t_nm_symbol *symbol, int zeropad);
 
 // ./src/nm
 const t_option_info	*get_help_options(void);

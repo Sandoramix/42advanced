@@ -6,7 +6,7 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 12:32:51 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/25 14:25:59 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/02/25 18:31:55 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,10 +59,10 @@ bool	nm32_get_symbols(t_nm32_meta *meta, Elf32_Shdr *sym_hdr, Elf32_Sym *sym)
 			.is_hidden = false, .is_weak = false, .is_debug = false
 		};
 		nm32_identify_symbol(&sym[i], meta->shdr, &symbol);
-		if (sym[i].st_info == STT_SECTION)
+		if (ELF32_ST_TYPE(sym[i].st_info) == STT_SECTION)
 		{
 			section = &meta->shdr[sym[i].st_shndx];
-			symbol.name = meta->strtab + section->sh_name;
+			symbol.name = meta->shstrtab + section->sh_name;
 		}
 		if (!elf_add_symbol(&meta->symbols, &meta->sym_count, symbol))
 			return (false);
@@ -84,13 +84,7 @@ void	nm32_print_symbols(t_nm32_meta *meta)
 			i++;
 			continue ;
 		}
-		if (symbol->type == SYMBOL_TYPE_UNDEFINED)
-			fprintf(stderr, "%8c", ' ');
-		else
-			fprintf(stderr, "%08lx", symbol->offset);
-		fprintf(stderr, " %c %s\n",
-			nm_symbol_chr(symbol->type, symbol->is_local, symbol->is_weak),
-			symbol->name);
+		nm_print_symbol_line(symbol, 8);
 		i++;
 	}
 }

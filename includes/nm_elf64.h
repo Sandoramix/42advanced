@@ -6,7 +6,7 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 14:39:42 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/25 14:23:34 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/02/25 18:31:24 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ typedef struct s_nm64_meta
 	Elf64_Shdr		*shdr;
 
 	char			*strtab;
+	char			*shstrtab;
 
 	size_t			sym_count;
 	t_nm_symbol		*symbols;
