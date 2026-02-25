@@ -6,7 +6,7 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 17:50:51 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/25 12:42:45 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/02/25 14:23:57 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,9 @@ static void	nm_run(t_nm *nm, const char *file_path, bool print_path)
 		write(1, ":\n", 2);
 	target.format = elf_get_format(file_path, target.mapping);
 	if (target.format == ELFCLASS32)
-		nm_run_32(nm, &target, mapping);
+		nm32_run(nm, &target, mapping);
 	else if (target.format == ELFCLASS64)
-		nm_run_64(nm, &target, mapping);
+		nm64_run(nm, &target, mapping);
 
 	nm_cleanup_file_mapping(&target.stat, target.fd, &mapping);
 	if (target.format == ELFCLASSNONE)

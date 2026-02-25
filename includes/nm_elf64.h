@@ -6,7 +6,7 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 14:39:42 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/25 12:36:56 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/02/25 14:23:34 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,6 @@ void	nm64_identify_symbol(Elf64_Sym *sym, Elf64_Shdr *shdr,
 			t_nm_symbol *symbol);
 bool	nm64_retrieve_symbols(t_nm_target *t, t_nm64_meta *meta);
 void	nm64_sort_symbols(t_nm64_meta *meta, bool reverse);
-void	nm_64_print_symbols(t_nm64_meta *meta);
+void	nm64_print_symbols(t_nm64_meta *meta);
 
 #endif

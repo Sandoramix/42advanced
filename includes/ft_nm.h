@@ -6,7 +6,7 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 14:31:32 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/25 12:40:06 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/02/25 14:25:39 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,10 +73,10 @@ void				nm_cycle(t_nm *nm);
 void				nm_set_file_error(t_nm *nm);
 
 // ./src/nm/elf32
-bool				nm_run_32(t_nm *nm, t_nm_target *t, Elf32_Ehdr *ehdr);
+bool				nm32_run(t_nm *nm, t_nm_target *t, Elf32_Ehdr *ehdr);
 
 // ./src/nm/elf64
-bool				nm_run_64(t_nm *nm, t_nm_target *t, Elf64_Ehdr *ehdr);
+bool				nm64_run(t_nm *nm, t_nm_target *t, Elf64_Ehdr *ehdr);
 
 // ./src/nm/parsing
 t_option_enum		nm_identify_option(const char *opt);

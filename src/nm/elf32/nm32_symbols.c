@@ -1,28 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   nm64_symbols.c                                     :+:      :+:    :+:   */
+/*   nm32_symbols.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 12:32:51 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/25 14:20:43 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/02/25 14:25:59 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
 
-void	nm64_identify_symbol(Elf64_Sym *sym, Elf64_Shdr *shdr,
+void	nm32_identify_symbol(Elf32_Sym *sym, Elf32_Shdr *shdr,
 	t_nm_symbol *symbol)
 {
-	Elf64_Shdr			*section;
+	Elf32_Shdr			*section;
 
-	if (ELF64_ST_TYPE(sym->st_info) == STT_FILE
-		|| ELF64_ST_TYPE(sym->st_info) == STT_SECTION)
+	if (ELF32_ST_TYPE(sym->st_info) == STT_FILE
+		|| ELF32_ST_TYPE(sym->st_info) == STT_SECTION)
 		symbol->is_debug = true;
-	if (ELF64_ST_BIND(sym->st_info) == STB_LOCAL)
+	if (ELF32_ST_BIND(sym->st_info) == STB_LOCAL)
 		symbol->is_local = true;
-	else if (ELF64_ST_BIND(sym->st_info) == STB_WEAK)
+	else if (ELF32_ST_BIND(sym->st_info) == STB_WEAK)
 		symbol->is_weak = true;
 	symbol->type = SYMBOL_TYPE_READONLY;
 	if (sym->st_shndx == SHN_UNDEF)
@@ -41,12 +41,12 @@ void	nm64_identify_symbol(Elf64_Sym *sym, Elf64_Shdr *shdr,
 	}
 }
 
-bool	nm64_get_symbols(t_nm64_meta *meta, Elf64_Shdr *sym_hdr, Elf64_Sym *sym)
+bool	nm32_get_symbols(t_nm32_meta *meta, Elf32_Shdr *sym_hdr, Elf32_Sym *sym)
 {
 	const size_t	sym_len = sym_hdr->sh_size / sym_hdr->sh_entsize;
 	size_t			i;
 	t_nm_symbol		symbol;
-	Elf64_Shdr		*section;
+	Elf32_Shdr		*section;
 
 	meta->strtab = (char *)meta->target->mapping
 		+ (meta->shdr[sym_hdr->sh_link]).sh_offset;
@@ -58,7 +58,7 @@ bool	nm64_get_symbols(t_nm64_meta *meta, Elf64_Shdr *sym_hdr, Elf64_Sym *sym)
 			.offset = sym[i].st_value, .is_local = false,
 			.is_hidden = false, .is_weak = false, .is_debug = false
 		};
-		nm64_identify_symbol(&sym[i], meta->shdr, &symbol);
+		nm32_identify_symbol(&sym[i], meta->shdr, &symbol);
 		if (sym[i].st_info == STT_SECTION)
 		{
 			section = &meta->shdr[sym[i].st_shndx];
@@ -70,7 +70,7 @@ bool	nm64_get_symbols(t_nm64_meta *meta, Elf64_Shdr *sym_hdr, Elf64_Sym *sym)
 	return (true);
 }
 
-void	nm64_print_symbols(t_nm64_meta *meta)
+void	nm32_print_symbols(t_nm32_meta *meta)
 {
 	size_t		i;
 	t_nm_symbol	*symbol;
@@ -85,9 +85,9 @@ void	nm64_print_symbols(t_nm64_meta *meta)
 			continue ;
 		}
 		if (symbol->type == SYMBOL_TYPE_UNDEFINED)
-			fprintf(stderr, "%16c", ' ');
+			fprintf(stderr, "%8c", ' ');
 		else
-			fprintf(stderr, "%016lx", symbol->offset);
+			fprintf(stderr, "%08lx", symbol->offset);
 		fprintf(stderr, " %c %s\n",
 			nm_symbol_chr(symbol->type, symbol->is_local, symbol->is_weak),
 			symbol->name);
@@ -95,7 +95,7 @@ void	nm64_print_symbols(t_nm64_meta *meta)
 	}
 }
 
-void	nm64_hide_symbols(t_option_enum options, t_nm64_meta *meta)
+void	nm32_hide_symbols(t_option_enum options, t_nm32_meta *meta)
 {
 	size_t			i;
 	t_option_enum	opt;
@@ -116,7 +116,7 @@ void	nm64_hide_symbols(t_option_enum options, t_nm64_meta *meta)
 	}
 }
 
-void	nm64_sort_symbols(t_nm64_meta *meta, bool reverse)
+void	nm32_sort_symbols(t_nm32_meta *meta, bool reverse)
 {
 	t_nm_symbol		tmp;
 	size_t			i;

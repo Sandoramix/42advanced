@@ -7,6 +7,7 @@ CFLAGS=-Wall -Wextra -Werror $(INCLUDES) -g
 
 SRC_COMMON= ./src/main.c \
 	./src/nm/elf32/nm32_run.c \
+	./src/nm/elf32/nm32_symbols.c \
 	./src/nm/elf64/nm64_run.c \
 	./src/nm/elf64/nm64_symbols.c \
 	./src/nm/help_options.c \

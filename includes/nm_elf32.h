@@ -6,7 +6,7 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 14:39:42 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/15 17:38:04 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/02/25 14:25:19 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,19 @@ typedef struct s_nm32_meta
 	Elf32_Ehdr	*ehdr;
 	Elf32_Shdr	*shdr;
 
-	Elf32_Shdr	*strtab;
+	char		*strtab;
 
 	size_t		sym_count;
 	t_nm_symbol	*symbols;
 
 }	t_nm32_meta;
 
-char	nm32_get_symbol_type(Elf32_Sym *sym, Elf32_Shdr *shdr);
 bool	nm32_get_symbols(t_nm32_meta *meta,
 			Elf32_Shdr *sym_hdr, Elf32_Sym *sym);
-
+void	nm32_hide_symbols(t_option_enum options, t_nm32_meta *meta);
+void	nm32_identify_symbol(Elf32_Sym *sym, Elf32_Shdr *shdr,
+			t_nm_symbol *symbol);
+bool	nm32_retrieve_symbols(t_nm_target *t, t_nm32_meta *meta);
+void	nm32_sort_symbols(t_nm32_meta *meta, bool reverse);
+void	nm32_print_symbols(t_nm32_meta *meta);
 #endif

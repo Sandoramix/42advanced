@@ -6,7 +6,7 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 13:58:34 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/25 12:40:44 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/02/25 14:23:26 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ bool	nm64_retrieve_symbols(t_nm_target *t, t_nm64_meta *meta)
  * @return true if the file was parsed successfully and symbols were added
  * @return false otherwise
  */
-bool	nm_run_64(t_nm *nm, t_nm_target *t, Elf64_Ehdr *ehdr)
+bool	nm64_run(t_nm *nm, t_nm_target *t, Elf64_Ehdr *ehdr)
 {
 	t_nm64_meta	meta;
 
@@ -52,7 +52,7 @@ bool	nm_run_64(t_nm *nm, t_nm_target *t, Elf64_Ehdr *ehdr)
 	if (!(nm->options.value & NMFLAG_NO_SORT))
 		nm64_sort_symbols(&meta, nm->options.value & NMFLAG_REVERSE_SORT);
 	nm64_hide_symbols(nm->options.value, &meta);
-	nm_64_print_symbols(&meta);
+	nm64_print_symbols(&meta);
 	free(meta.symbols);
 	return (true);
 }
