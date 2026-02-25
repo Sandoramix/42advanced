@@ -6,7 +6,7 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 13:32:42 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/15 18:06:24 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/02/25 12:12:58 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,11 +63,28 @@ typedef struct s_nm_option
 	int					bad;
 }	t_nm_option;
 
+typedef enum e_nm_symbol_type
+{
+	SYMBOL_TYPE_UNDEFINED = 'U',
+	SYMBOL_TYPE_ABSOLUTE = 'A',
+	SYMBOL_TYPE_BSS = 'B',
+	SYMBOL_TYPE_TEXT = 'T',
+	SYMBOL_TYPE_DATA = 'D',
+	SYMBOL_TYPE_READONLY = 'R',
+}	t_nm_symbol_type;
+
 typedef struct s_nm_symbol
 {
-	char	*name;
-	uint64_t		offset;
-	char			type;
+	bool				is_local;
+	bool				is_hidden;
+	bool				is_weak;
+	bool				is_debug;
+
+	char				*name;
+	uint64_t			offset;
+
+	t_nm_symbol_type	type;
+
 }	t_nm_symbol;
 
 /**

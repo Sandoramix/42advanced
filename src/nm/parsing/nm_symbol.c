@@ -1,23 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   nm.c                                               :+:      :+:    :+:   */
+/*   nm_symbol.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/11 14:42:27 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/25 12:43:35 by odudniak         ###   ########.fr       */
+/*   Created: 2026/02/25 12:31:29 by odudniak          #+#    #+#             */
+/*   Updated: 2026/02/25 12:31:44 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
 
-void	ft_nm(t_nm *nm)
+char	nm_symbol_chr(t_nm_symbol_type type, bool local, bool weak)
 {
-	int	i;
+	char	val;
 
-	if (nm->options.valid > 0 || nm->options.bad > 0)
-		return (nm_help_message(nm), exit(EXIT_FAILURE));
-	i = -1;
-	nm_cycle(nm);
+	val = type;
+	if (weak)
+	{
+		val = 'W';
+		if (type == SYMBOL_TYPE_UNDEFINED)
+			val = 'w';
+	}
+	if (local)
+		return (ft_tolower(val));
+	return (val);
 }

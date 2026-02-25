@@ -6,7 +6,7 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 14:31:32 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/20 15:47:16 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/02/25 12:40:06 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,7 @@ bool				nm_run_64(t_nm *nm, t_nm_target *t, Elf64_Ehdr *ehdr);
 
 // ./src/nm/parsing
 t_option_enum		nm_identify_option(const char *opt);
+char				nm_symbol_chr(t_nm_symbol_type type, bool local, bool weak);
 t_option_enum		parse_argv(char **argv, int *valid_opts, int *bad_opts);
 
 // ./src/utils
@@ -88,6 +89,7 @@ bool				elf_add_symbol(t_nm_symbol **sym_head, size_t *sym_size,
 int					elf_get_format(const char *file_path,
 						unsigned char *e_ident);
 int					ft_strcmp(const char *s1, const char *s2);
+int					ft_strcoll(const char *s1, const char *s2);
 size_t				ft_strlen(const char *s);
 char				ft_tolower(char c);
 void				nm_cleanup_file_mapping(t_stat *stat, int fd,
@@ -95,4 +97,5 @@ void				nm_cleanup_file_mapping(t_stat *stat, int fd,
 t_stat				nm_get_file_stat(const char *filename, int *fd);
 bool				nm_retrieve_file_mapping(t_nm *nm, t_stat *stat, int fd,
 						void **target_mapping);
+
 #endif

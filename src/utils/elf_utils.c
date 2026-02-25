@@ -6,7 +6,7 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 14:52:42 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/15 18:08:31 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/02/25 12:13:27 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,11 @@ bool	elf_add_symbol(t_nm_symbol **sym_head, size_t *sym_size,
 	new_head = malloc((sym_len + 1) * sizeof(t_nm_symbol));
 	if (!new_head)
 		return (false);
-	new_head[sym_len].name = sym.name;
-	new_head[sym_len].offset = sym.offset;
-	new_head[sym_len].type = sym.type;
+	new_head[sym_len] = (t_nm_symbol){
+		.name = sym.name, .offset = sym.offset, .type = sym.type,
+		.is_hidden = sym.is_hidden, .is_local = sym.is_local,
+		.is_weak = sym.is_weak, .is_debug = sym.is_debug
+	};
 	i = 0;
 	while (*sym_head && i < sym_len)
 	{
