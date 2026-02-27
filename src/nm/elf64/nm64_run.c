@@ -6,11 +6,40 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 13:58:34 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/25 18:37:38 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/02/27 09:40:32 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
+
+void	nm64_sort_symbols(t_nm64_meta *meta, bool reverse)
+{
+	t_nm_symbol		tmp;
+	size_t			i;
+	size_t			j;
+	int				cmp;
+
+	i = 0;
+	while (i < meta->sym_count)
+	{
+		j = i + 1;
+		while (j < meta->sym_count)
+		{
+			cmp = ft_strcoll(meta->symbols[i].name, meta->symbols[j].name);
+			if (cmp == 0)
+				cmp = (meta->symbols[i].offset > meta->symbols[j].offset)
+					- (meta->symbols[i].offset < meta->symbols[j].offset);
+			if ((!reverse && cmp > 0) || (reverse && cmp < 0))
+			{
+				tmp = meta->symbols[i];
+				meta->symbols[i] = meta->symbols[j];
+				meta->symbols[j] = tmp;
+			}
+			j++;
+		}
+		i++;
+	}
+}
 
 bool	nm64_retrieve_symbols(t_nm_target *t, t_nm64_meta *meta)
 {

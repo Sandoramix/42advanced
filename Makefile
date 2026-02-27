@@ -18,6 +18,7 @@ SRC_COMMON= ./src/main.c \
 	./src/nm/parsing/parse_argv.c \
 	./src/utils/elf_utils.c \
 	./src/utils/file_utils.c \
+	./src/utils/ft_strchr.c \
 	./src/utils/ft_strcmp.c \
 	./src/utils/ft_strlen.c \
 	./src/utils/ft_tolower.c \

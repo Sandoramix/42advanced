@@ -6,7 +6,7 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 14:36:02 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/25 16:57:24 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/02/27 09:45:21 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	nm_print_symbol_line(t_nm_symbol *symbol, int zeropad)
 	else
 		print_hexa(symbol->offset, zeropad - 1);
 	write(1, " ", 1);
-	c = nm_symbol_chr(symbol->type, symbol->is_local, symbol->is_weak);
+	c = nm_symbol_chr(symbol);
 	write(1, &c, 1);
 	write(1, " ", 1);
 	write(1, symbol->name, ft_strlen(symbol->name));

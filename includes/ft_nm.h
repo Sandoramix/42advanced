@@ -6,7 +6,7 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 14:31:32 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/25 14:43:41 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/02/27 12:00:51 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ bool				nm64_run(t_nm *nm, t_nm_target *t, Elf64_Ehdr *ehdr);
 
 // ./src/nm/parsing
 t_option_enum		nm_identify_option(const char *opt);
-char				nm_symbol_chr(t_nm_symbol_type type, bool local, bool weak);
+char				nm_symbol_chr(const t_nm_symbol *symbol);
 t_option_enum		parse_argv(char **argv, int *valid_opts, int *bad_opts);
 
 // ./src/utils
@@ -90,7 +90,9 @@ bool				elf_add_symbol(t_nm_symbol **sym_head, size_t *sym_size,
 						t_nm_symbol sym);
 int					elf_get_format(const char *file_path,
 						unsigned char *e_ident);
+char				*ft_strchr(const char *s, int c);
 int					ft_strcmp(const char *s1, const char *s2);
+int					ft_strncmp(const char *s1, const char *s2, size_t n);
 int					ft_strcoll(const char *s1, const char *s2);
 size_t				ft_strlen(const char *s);
 char				ft_tolower(char c);

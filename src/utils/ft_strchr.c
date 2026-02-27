@@ -1,29 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   nm_symbol.c                                        :+:      :+:    :+:   */
+/*   ft_strchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/25 12:31:29 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/27 12:22:32 by odudniak         ###   ########.fr       */
+/*   Created: 2026/02/27 12:00:11 by odudniak          #+#    #+#             */
+/*   Updated: 2026/02/27 12:00:25 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
 
-char	nm_symbol_chr(const t_nm_symbol *symbol)
+char	*ft_strchr(const char *s, int c)
 {
-	char					val;
-
-	val = symbol->type;
-	if (symbol->is_weak)
+	while (s && *s)
 	{
-		val = 'W';
-		if (symbol->type == SYMBOL_TYPE_UNDEFINED)
-			val = 'w';
+		if (*s == c)
+			return ((char *)s);
+		s++;
 	}
-	if (symbol->is_local)
-		return (ft_tolower(val));
-	return (val);
+	return (NULL);
 }

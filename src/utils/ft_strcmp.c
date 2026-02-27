@@ -6,7 +6,7 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 13:29:55 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/25 12:10:41 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/02/27 10:17:58 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,23 @@ int	ft_strcmp(const char *s1, const char *s2)
 	s2p = (unsigned char *)s2;
 	i = 0;
 	if (!s1 || !s2)
-		return (INT_MIN);
+		return (s1 - s2);
 	while (s2p[i] && s1p[i] && s2p[i] == s1p[i])
 		i++;
 	return (s1p[i] - s2p[i]);
 }
 
+int	ft_strncmp(const char *s1, const char *s2, size_t n)
+{
+	size_t	i;
+
+	if (!s1 || !s2)
+		return (s1 - s2);
+	i = 0;
+	while (i < n && s1[i] && s2[i] && s1[i] == s2[i])
+		i++;
+	return (s1[i] - s2[i]);
+}
 
 static int	is_separator(char c)
 {

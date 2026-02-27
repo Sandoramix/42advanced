@@ -6,7 +6,7 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 13:32:42 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/25 12:12:58 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/02/27 13:28:33 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ typedef struct s_nm_option
 typedef enum e_nm_symbol_type
 {
 	SYMBOL_TYPE_UNDEFINED = 'U',
+	SYMBOL_TYPE_COMMON = 'C',
 	SYMBOL_TYPE_ABSOLUTE = 'A',
 	SYMBOL_TYPE_BSS = 'B',
 	SYMBOL_TYPE_TEXT = 'T',
@@ -79,11 +80,13 @@ typedef struct s_nm_symbol
 	bool				is_hidden;
 	bool				is_weak;
 	bool				is_debug;
+	bool				is_unique;
 
 	char				*name;
 	uint64_t			offset;
 
 	t_nm_symbol_type	type;
+	uint8_t				st_type;
 
 }	t_nm_symbol;
 
