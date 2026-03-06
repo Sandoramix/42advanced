@@ -6,7 +6,7 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 17:50:51 by odudniak          #+#    #+#             */
-/*   Updated: 2026/03/06 08:05:44 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/03/06 08:48:47 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ static void	nm_run(t_nm *nm, const char *file_path, bool print_path)
 	if (!nm_retrieve_file_mapping(nm, &target.stat,
 			target.fd, (void **)&target.mapping))
 		return ;
+	if (print_path)
+		write(1, "\n", 1);
 	if (print_path)
 		write(1, file_path, ft_strlen(file_path));
 	if (print_path)
