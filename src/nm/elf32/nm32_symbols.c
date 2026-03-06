@@ -21,7 +21,8 @@ int	nm32_is_readonly(Elf32_Word sh_flags, Elf32_Word sh_type)
 			|| sh_type == SHT_REL || sh_type == SHT_HASH
 			|| sh_type == SHT_GNU_versym || sh_type == SHT_GNU_verdef
 			|| sh_type == SHT_STRTAB || sh_type == SHT_DYNSYM
-			|| sh_type == SHT_NOTE));
+			|| sh_type == SHT_NOTE || sh_type == SHT_GNU_HASH
+			|| sh_type == SHT_GNU_verneed));
 }
 
 static void	nm32_check_section(t_nm_symbol *symbol,
@@ -31,7 +32,9 @@ static void	nm32_check_section(t_nm_symbol *symbol,
 	const Elf32_Word	sh_flags = section->sh_flags;
 
 	(void)sym;
-	if (sh_type == SHT_NOBITS
+	if (!(sh_flags & SHF_ALLOC))
+		symbol->type = SYMBOL_TYPE_DEBUG;
+	else if (sh_type == SHT_NOBITS
 		&& (sh_flags & (SHF_ALLOC | SHF_WRITE)) == (SHF_ALLOC | SHF_WRITE))
 		symbol->type = SYMBOL_TYPE_BSS;
 	else if (nm32_is_readonly(sh_flags, sh_type))
@@ -45,9 +48,6 @@ static void	nm32_check_section(t_nm_symbol *symbol,
 		symbol->type = SYMBOL_TYPE_DATA;
 	else if (sh_type == SHT_DYNAMIC)
 		symbol->type = SYMBOL_TYPE_DATA;
-	else if (sh_type == SHT_PROGBITS
-		&& sh_flags == (SHF_ALLOC | SHF_EXECINSTR))
-		symbol->type = SYMBOL_TYPE_TEXT;
 	else
 		symbol->type = SYMBOL_TYPE_TEXT;
 	if (symbol->is_local)

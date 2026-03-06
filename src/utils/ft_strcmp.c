@@ -43,7 +43,7 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n)
 
 static int	is_separator(char c)
 {
-	return (c == '_' || c == '.' || c == '@');
+	return (c == '_' || c == '.' || c == '@' || c == '-');
 }
 
 /* Secondary pass: same separator-skipping logic, but case-aware.

@@ -72,6 +72,7 @@ typedef enum e_nm_symbol_type
 	SYMBOL_TYPE_TEXT = 'T',
 	SYMBOL_TYPE_DATA = 'D',
 	SYMBOL_TYPE_READONLY = 'R',
+	SYMBOL_TYPE_DEBUG = 'N',
 }	t_nm_symbol_type;
 
 typedef struct s_nm_symbol
