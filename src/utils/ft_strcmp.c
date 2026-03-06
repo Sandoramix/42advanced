@@ -51,8 +51,8 @@ static int	is_separator(char c)
  * The collation rules in GNU nm (reverse engineered) are:
  * - '_' and '.' are skipped for the primary comparison
  * - the remaining characters are compared case-insensitively
- * - if the stripped versions are identical, the order is naturally preserved
- *   (e.g. {"data_start", "__data_start"} are not sorted)
+ * - if the stripped versions are identical, the first case difference is used
+ *   as tiebreaker: lowercase sorts before uppercase (en_US.UTF-8 behaviour)
  */
 int	ft_strcoll(const char *s1, const char *s2)
 {
@@ -60,11 +60,13 @@ int	ft_strcoll(const char *s1, const char *s2)
 	size_t	j;
 	int		c1;
 	int		c2;
+	int		case_diff;
 
 	if (!s1 || !s2)
 		return (s1 - s2);
 	i = 0;
 	j = 0;
+	case_diff = 0;
 	while (s1[i] || s2[j])
 	{
 		while (is_separator(s1[i]))
@@ -77,8 +79,12 @@ int	ft_strcoll(const char *s1, const char *s2)
 		c2 = ft_tolower(s2[j]);
 		if (c1 != c2)
 			return (c1 - c2);
+		if (!case_diff && s1[i] != s2[j])
+			case_diff = (s1[i] >= 'A' && s1[i] <= 'Z') ? 1 : -1;
 		i++;
 		j++;
 	}
+	if (case_diff)
+		return (case_diff);
 	return (ft_strcmp(s1, s2));
 }
