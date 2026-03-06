@@ -32,11 +32,13 @@ static void	nm32_check_section(t_nm_symbol *symbol,
 
 	(void)sym;
 	if (sh_type == SHT_NOBITS
-		&& sh_flags == (SHF_ALLOC | SHF_WRITE))
+		&& (sh_flags & (SHF_ALLOC | SHF_WRITE)) == (SHF_ALLOC | SHF_WRITE))
 		symbol->type = SYMBOL_TYPE_BSS;
 	else if (nm32_is_readonly(sh_flags, sh_type))
 		symbol->type = SYMBOL_TYPE_READONLY;
-	else if (sh_type == SHT_PROGBITS && sh_flags == (SHF_ALLOC | SHF_WRITE))
+	else if (sh_type == SHT_PROGBITS
+		&& (sh_flags & (SHF_ALLOC | SHF_WRITE)) == (SHF_ALLOC | SHF_WRITE)
+		&& !(sh_flags & SHF_EXECINSTR))
 		symbol->type = SYMBOL_TYPE_DATA;
 	else if (sh_type == SHT_INIT_ARRAY || sh_type == SHT_FINI_ARRAY
 		|| sh_type == SHT_PREINIT_ARRAY)

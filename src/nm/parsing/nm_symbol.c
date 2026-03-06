@@ -19,9 +19,18 @@ char	nm_symbol_chr(const t_nm_symbol *symbol)
 	val = symbol->type;
 	if (symbol->is_weak)
 	{
-		val = 'W';
-		if (symbol->type == SYMBOL_TYPE_UNDEFINED)
-			val = 'w';
+		if (symbol->st_type == STT_OBJECT)
+		{
+			val = 'V';
+			if (symbol->type == SYMBOL_TYPE_UNDEFINED)
+				val = 'v';
+		}
+		else
+		{
+			val = 'W';
+			if (symbol->type == SYMBOL_TYPE_UNDEFINED)
+				val = 'w';
+		}
 	}
 	if (symbol->is_local)
 		return (ft_tolower(val));
