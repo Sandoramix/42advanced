@@ -35,11 +35,7 @@ bool	elf_add_symbol(t_nm_symbol **sym_head, size_t *sym_size,
 	new_head = malloc((sym_len + 1) * sizeof(t_nm_symbol));
 	if (!new_head)
 		return (false);
-	new_head[sym_len] = (t_nm_symbol){
-		.name = sym.name, .offset = sym.offset, .type = sym.type,
-		.is_hidden = sym.is_hidden, .is_local = sym.is_local,
-		.is_weak = sym.is_weak, .is_debug = sym.is_debug
-	};
+	new_head[sym_len] = sym;
 	i = 0;
 	while (*sym_head && i < sym_len)
 	{
