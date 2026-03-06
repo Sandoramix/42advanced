@@ -6,11 +6,23 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 12:32:51 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/27 13:39:15 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/03/06 08:12:39 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
+
+int	nm32_is_readonly(Elf32_Word sh_flags, Elf32_Word sh_type)
+{
+	return ((sh_flags & SHF_ALLOC)
+		&& !(sh_flags & SHF_WRITE)
+		&& !(sh_flags & SHF_EXECINSTR)
+		&& (sh_type == SHT_PROGBITS || sh_type == SHT_RELA
+			|| sh_type == SHT_REL || sh_type == SHT_HASH
+			|| sh_type == SHT_GNU_versym || sh_type == SHT_GNU_verdef
+			|| sh_type == SHT_STRTAB || sh_type == SHT_DYNSYM
+			|| sh_type == SHT_NOTE));
+}
 
 static void	nm32_check_section(t_nm_symbol *symbol,
 	Elf32_Sym *sym, Elf32_Shdr *section)
@@ -22,20 +34,18 @@ static void	nm32_check_section(t_nm_symbol *symbol,
 	if (sh_type == SHT_NOBITS
 		&& sh_flags == (SHF_ALLOC | SHF_WRITE))
 		symbol->type = SYMBOL_TYPE_BSS;
-	else if (sh_flags == SHF_ALLOC
-		&& (sh_type == SHT_PROGBITS || sh_type == SHT_RELA
-			|| sh_type == SHT_REL || sh_type == SHT_HASH
-			|| sh_type == SHT_GNU_versym || sh_type == SHT_GNU_verdef
-			|| sh_type == SHT_STRTAB || sh_type == SHT_DYNSYM
-			|| sh_type == SHT_NOTE))
+	else if (nm32_is_readonly(sh_flags, sh_type))
 		symbol->type = SYMBOL_TYPE_READONLY;
 	else if (sh_type == SHT_PROGBITS && sh_flags == (SHF_ALLOC | SHF_WRITE))
+		symbol->type = SYMBOL_TYPE_DATA;
+	else if (sh_type == SHT_INIT_ARRAY || sh_type == SHT_FINI_ARRAY
+		|| sh_type == SHT_PREINIT_ARRAY)
+		symbol->type = SYMBOL_TYPE_DATA;
+	else if (sh_type == SHT_DYNAMIC)
 		symbol->type = SYMBOL_TYPE_DATA;
 	else if (sh_type == SHT_PROGBITS
 		&& sh_flags == (SHF_ALLOC | SHF_EXECINSTR))
 		symbol->type = SYMBOL_TYPE_TEXT;
-	else if (sh_type == SHT_DYNAMIC)
-		symbol->type = SYMBOL_TYPE_DATA;
 	else
 		symbol->type = SYMBOL_TYPE_TEXT;
 	if (symbol->is_local)
@@ -93,44 +103,4 @@ bool	nm32_get_symbols(t_nm32_meta *meta, Elf32_Shdr *sym_hdr, Elf32_Sym *sym)
 			return (false);
 	}
 	return (true);
-}
-
-void	nm32_print_symbols(t_nm32_meta *meta)
-{
-	size_t		i;
-	t_nm_symbol	*symbol;
-
-	i = 0;
-	while (i < meta->sym_count)
-	{
-		symbol = &meta->symbols[i];
-		if (symbol->is_hidden)
-		{
-			i++;
-			continue ;
-		}
-		nm_print_symbol_line(symbol, 8);
-		i++;
-	}
-}
-
-void	nm32_hide_symbols(t_option_enum options, t_nm32_meta *meta)
-{
-	size_t			i;
-	t_option_enum	opt;
-	t_nm_symbol		*sym;
-
-	opt = options;
-	i = 0;
-	while (i < meta->sym_count)
-	{
-		sym = &meta->symbols[i];
-		if ((opt & NMFLAG_EXTERN_ONLY) && sym->is_local)
-			sym->is_hidden = true;
-		if ((opt & NMFLAG_UNDEFINED_ONLY) && sym->type != SYMBOL_TYPE_UNDEFINED)
-			sym->is_hidden = true;
-		if (!(opt & NMFLAG_DEBUG_SYMS) && sym->is_debug)
-			sym->is_hidden = true;
-		i++;
-	}
 }

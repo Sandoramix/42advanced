@@ -6,7 +6,7 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 13:32:42 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/27 13:28:33 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/03/06 08:01:57 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,10 +102,16 @@ typedef struct s_nm_symbol
  */
 typedef struct s_nm_target
 {
+	char			*path;
+
 	int				fd;
-	unsigned char	*mapping;
 	t_stat			stat;
 	int				format;
+
+	unsigned char	*mapping;
+
+	int				symbol_count;
+
 }	t_nm_target;
 
 #endif

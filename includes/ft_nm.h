@@ -6,7 +6,7 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 14:31:32 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/27 12:00:51 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/03/06 08:05:19 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,10 +75,10 @@ void				nm_cycle(t_nm *nm);
 void				nm_set_file_error(t_nm *nm);
 
 // ./src/nm/elf32
-bool				nm32_run(t_nm *nm, t_nm_target *t, Elf32_Ehdr *ehdr);
+int					nm32_run(t_nm *nm, t_nm_target *t, Elf32_Ehdr *ehdr);
 
 // ./src/nm/elf64
-bool				nm64_run(t_nm *nm, t_nm_target *t, Elf64_Ehdr *ehdr);
+int					nm64_run(t_nm *nm, t_nm_target *t, Elf64_Ehdr *ehdr);
 
 // ./src/nm/parsing
 t_option_enum		nm_identify_option(const char *opt);
@@ -99,6 +99,7 @@ char				ft_tolower(char c);
 void				nm_cleanup_file_mapping(t_stat *stat, int fd,
 						void **target_mapping);
 t_stat				nm_get_file_stat(const char *filename, int *fd);
+void				nm_print_possible_warnings(t_nm *nm, t_nm_target *t);
 bool				nm_retrieve_file_mapping(t_nm *nm, t_stat *stat, int fd,
 						void **target_mapping);
 
