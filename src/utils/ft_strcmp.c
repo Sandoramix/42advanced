@@ -6,7 +6,7 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 13:29:55 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/27 10:17:58 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/03/25 09:13:34 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,8 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n)
 	i = 0;
 	while (i < n && s1[i] && s2[i] && s1[i] == s2[i])
 		i++;
+	if (i == n)
+		return (0);
 	return (s1[i] - s2[i]);
 }
 

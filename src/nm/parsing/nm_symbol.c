@@ -6,7 +6,7 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 12:31:29 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/27 12:22:32 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/03/25 09:10:02 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ char	nm_symbol_chr(const t_nm_symbol *symbol)
 				val = 'w';
 		}
 	}
-	if (symbol->is_local)
+	if (symbol->is_local && !symbol->is_dwarf_debug)
 		return (ft_tolower(val));
 	return (val);
 }

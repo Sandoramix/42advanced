@@ -6,7 +6,7 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 14:36:02 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/27 09:45:21 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/03/25 09:21:11 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ void	print_hexa(uint64_t n, int zeropad)
 	char				c;
 
 	i = 0;
-
 	c = hex[(n % 16)];
 	if (n > 15 || zeropad > 0)
 		print_hexa(n / 16, zeropad - 1);

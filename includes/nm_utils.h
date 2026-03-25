@@ -6,7 +6,7 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 13:32:42 by odudniak          #+#    #+#             */
-/*   Updated: 2026/03/06 08:01:57 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/03/25 08:46:38 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ typedef struct s_nm_symbol
 	bool				is_hidden;
 	bool				is_weak;
 	bool				is_debug;
+	bool				is_dwarf_debug;
 	bool				is_unique;
 
 	char				*name;

@@ -6,7 +6,7 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 14:39:42 by odudniak          #+#    #+#             */
-/*   Updated: 2026/02/27 10:21:35 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/03/25 08:41:08 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,6 @@ typedef struct s_nm64_meta
 bool	nm64_get_symbols(t_nm64_meta *meta,
 			Elf64_Shdr *sym_hdr, Elf64_Sym *sym);
 void	nm64_hide_symbols(t_option_enum options, t_nm64_meta *meta);
-void	nm64_identify_symbol(Elf64_Sym *sym, 
-			Elf64_Shdr *shdr, t_nm_symbol *symbol);
 bool	nm64_retrieve_symbols(t_nm_target *t, t_nm64_meta *meta);
 void	nm64_sort_symbols(t_nm64_meta *meta, bool reverse);
 void	nm64_print_symbols(t_nm64_meta *meta);
