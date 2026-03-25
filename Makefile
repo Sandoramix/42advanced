@@ -13,6 +13,7 @@ SRC_COMMON= ./src/main.c \
 	./src/nm/help_options.c \
 	./src/nm/nm_run.c \
 	./src/nm/nm_utils.c \
+	./src/nm/nm_sort.c \
 	./src/nm/parsing/identify_option.c \
 	./src/nm/parsing/nm_symbol.c \
 	./src/nm/parsing/parse_argv.c \

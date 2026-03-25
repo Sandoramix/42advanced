@@ -6,7 +6,7 @@
 /*   By: odudniak <odudniak@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 14:31:32 by odudniak          #+#    #+#             */
-/*   Updated: 2026/03/06 08:05:19 by odudniak         ###   ########.fr       */
+/*   Updated: 2026/03/25 07:54:13 by odudniak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,8 @@ void				nm_print_symbol_line(t_nm_symbol *symbol, int zeropad);
 const t_option_info	*get_help_options(void);
 void				nm_cycle(t_nm *nm);
 void				nm_set_file_error(t_nm *nm);
+void				nm_sort_symbols(t_nm_symbol *symbols,
+						size_t sym_count, bool reverse);
 
 // ./src/nm/elf32
 int					nm32_run(t_nm *nm, t_nm_target *t, Elf32_Ehdr *ehdr);

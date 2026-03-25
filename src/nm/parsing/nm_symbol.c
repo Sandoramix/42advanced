@@ -17,6 +17,8 @@ char	nm_symbol_chr(const t_nm_symbol *symbol)
 	char					val;
 
 	val = symbol->type;
+	if (symbol->st_type == STT_GNU_IFUNC)
+		return ('i');
 	if (symbol->is_weak)
 	{
 		if (symbol->st_type == STT_OBJECT)
