@@ -5,6 +5,12 @@ The nm command is a versatile tool used primarily by developers and system progr
 It is particularly useful when debugging or trying to understand the inner workings of compiled programs.
 The nm command reveals valuable information about the symbols—such as functions and variables—contained in object files, libraries, and executable files.
 
+## Compatibility notes
+
+This project is about "imitate" the `nm` command with much less features.
+The school's PCs provide a specific version so it will be used as reference (other versions might compute a different output): **GNU nm (GNU Binutils for Ubuntu) 2.38**
+
+
 ## Requirements
 
 ### Base requirements
