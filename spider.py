@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 import os
+from collections import deque
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
+from urllib.parse import urlparse, urljoin
 
 from bs4 import BeautifulSoup
 import requests
@@ -8,6 +11,11 @@ import time
 from requests.adapters import Retry, HTTPAdapter
 from argparse import ArgumentParser, ArgumentTypeError
 
+from tqdm import tqdm
+
+MAX_WORKERS = 10
+TIMEOUT = 10
+ALLOWED_EXTENSIONS = ['.jpg', '.png', '.jpeg', '.gif', '.bmp']
 
 def depth_type(value: str) -> int:
     try:
@@ -36,12 +44,14 @@ parser.add_argument(
 
 parser.add_argument(
     "-r",
-    action="store_false",
+    "--recursive",
+    action="store_true",
     help="Recursively scan linked pages for images."
 )
 
 parser.add_argument(
     "-l",
+    "--depth",
     metavar="DEPTH",
     type=depth_type,
     default=None,
@@ -62,46 +72,122 @@ parser.add_argument(
 
 args = parser.parse_args()
 
+if args.depth is not None and not args.recursive:
+    parser.error("-l/--depth requires -r/--recursive")
 
-def listFD(url):
+session = requests.Session()
+
+retries = Retry(
+    total=3,
+    connect=3,
+    read=3,
+    backoff_factor=1,
+    allowed_methods=["GET", "HEAD"]
+)
+
+adapter = HTTPAdapter(max_retries=retries, pool_connections=20, pool_maxsize=20)
+
+session.mount("http://", adapter)
+session.mount("https://", adapter)
+
+# UTILS
+
+def is_media_file(url: str) -> bool:
+    path = urlparse(url).path.lower()
+    return any(path.endswith(ext) for ext in ALLOWED_EXTENSIONS)
+
+
+def safe_filename(url: str) -> Path:
+    parsed = urlparse(url)
+    path = parsed.path.lstrip("/")
+
+    if not path:
+        path = "index.html"
+
+    return args.output_dir / path
+def fetch_links(url: str):
+    """
+    Fetch all links from a page.
+    """
     try:
-        retry = Retry(total=10, connect=5, read=5, allowed_methods=['GET'], backoff_factor=10)
-        session = requests.Session()
-        session.mount('http://', HTTPAdapter(max_retries=retry))
-        session.mount('https://', HTTPAdapter(max_retries=retry))
-        page_content = session.get(url).text
-        soup = BeautifulSoup(page_content, 'html.parser')
-        return [url + '/' + node.get('href') for node in soup.find_all('a') if node.get('href')]
-    except:
+        response = session.get(url, timeout=TIMEOUT)
+
+        if "text/html" not in response.headers.get("Content-Type", ""):
+            return []
+
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        links = []
+
+        for tag in soup.find_all("a", href=True):
+            full_url = urljoin(url, tag["href"])
+            links.append(full_url)
+
+        return links
+
+    except requests.RequestException:
         return []
 
 
-if not os.path.exists(args.output_dir) or not os.path.isdir(args.output_dir) or not os.access(args.output_dir, os.W_OK):
-    print(f"Directory {args.output_dir} does not exist or is not writable")
-    exit(1)
+def download_file(url: str):
+    try:
+        response = session.get(url, stream=True, timeout=TIMEOUT)
+        response.raise_for_status()
 
-files = listFD(args.url)
+        filepath = safe_filename(url)
+        filepath.parent.mkdir(parents=True, exist_ok=True)
 
-allowed_extensions = ['.jpg', '.png', '.jpeg', '.gif', '.bmp']
+        with open(filepath, "wb") as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                if chunk:
+                    f.write(chunk)
 
+        return True
 
-index = 0
-for file in files:
-    if (file.endswith(tuple(allowed_extensions)) or file.endswith('../')):
+    except requests.RequestException:
+        return False
+
+visited = set()
+media_files = set()
+
+queue = deque([(args.url, 0)])
+
+while queue:
+    current_url, depth = queue.popleft()
+
+    if current_url in visited:
         continue
-    if index == 100:
-        time.sleep(1)
-        index = 0
-    if file.endswith('/') and not file.endswith('/../'):
-        files.extend(listFD(file[:len(file) - 1]))
-    elif file.endswith('/../'):
-        continue
-    else:
-        try:
-            page = requests.get(file).text
-            with open(args.output_dir / file.replace(args.url, ''), 'wb') as f:
-                f.write(page)
-            index += 1
-        except:
-            continue
-f.close()
+
+    visited.add(current_url)
+
+    links = fetch_links(current_url)
+
+    for link in links:
+
+        if is_media_file(link):
+            media_files.add(link)
+
+        elif args.recursive and (args.depth is None or depth < args.depth):
+            queue.append((link, depth + 1))
+
+
+print(f"Found {len(media_files)} files")
+
+with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+
+    futures = [
+        executor.submit(download_file, url)
+        for url in media_files
+    ]
+
+    success = 0
+
+    with tqdm(total=len(futures), desc="Downloading", unit="file") as pbar:
+
+        for future in as_completed(futures):
+            if future.result():
+                success += 1
+
+            pbar.update(1)
+
+print(f"Downloaded {success}/{len(media_files)} files")
