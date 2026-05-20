@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import os
+
 from collections import deque
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
@@ -7,15 +7,27 @@ from urllib.parse import urlparse, urljoin
 
 from bs4 import BeautifulSoup
 import requests
-import time
 from requests.adapters import Retry, HTTPAdapter
 from argparse import ArgumentParser, ArgumentTypeError
 
 from tqdm import tqdm
 
+
+# -----------------------
+# CONFIG
+# -----------------------
+
 MAX_WORKERS = 10
 TIMEOUT = 10
-ALLOWED_EXTENSIONS = ['.jpg', '.png', '.jpeg', '.gif', '.bmp']
+
+ALLOWED_EXTENSIONS = {
+    ".jpg", ".png", ".jpeg", ".gif", ".bmp"
+}
+
+
+# -----------------------
+# CLI
+# -----------------------
 
 def depth_type(value: str) -> int:
     try:
@@ -32,48 +44,41 @@ def depth_type(value: str) -> int:
 parser = ArgumentParser(
     prog="spider",
     usage="./%(prog)s [-r] [-l DEPTH] [-p DIR] URL",
-    description="Download images from a URL."
+    description="Download media from a URL."
 )
 
-parser.add_argument(
-    "url",
-    metavar="URL",
-    type=str,
-    help="Target URL to scan for images.",
-)
+parser.add_argument("url", type=str)
 
 parser.add_argument(
     "-r",
     "--recursive",
     action="store_true",
-    help="Recursively scan linked pages for images."
+    help="Recursively scan linked pages."
 )
 
 parser.add_argument(
     "-l",
     "--depth",
-    metavar="DEPTH",
     type=depth_type,
-    default=None,
-    help=(
-        "Maximum recursion depth. "
-        "Requires -r."
-    )
+    default=None
 )
 
 parser.add_argument(
     "-p",
     "--output-dir",
-    metavar="DIR",
     type=Path,
     default=Path("./data"),
-    help="Directory where images will be saved."
 )
 
 args = parser.parse_args()
 
 if args.depth is not None and not args.recursive:
     parser.error("-l/--depth requires -r/--recursive")
+
+
+# -----------------------
+# HTTP SESSION
+# -----------------------
 
 session = requests.Session()
 
@@ -85,12 +90,19 @@ retries = Retry(
     allowed_methods=["GET", "HEAD"]
 )
 
-adapter = HTTPAdapter(max_retries=retries, pool_connections=20, pool_maxsize=20)
+adapter = HTTPAdapter(
+    max_retries=retries,
+    pool_connections=20,
+    pool_maxsize=20
+)
 
 session.mount("http://", adapter)
 session.mount("https://", adapter)
 
-# UTILS
+
+# -----------------------
+# HELPERS
+# -----------------------
 
 def is_media_file(url: str) -> bool:
     path = urlparse(url).path.lower()
@@ -101,16 +113,19 @@ def safe_filename(url: str) -> Path:
     parsed = urlparse(url)
     path = parsed.path.lstrip("/")
 
-    if not path:
+    if not path or path.endswith("/"):
         path = "index.html"
 
     return args.output_dir / path
-def fetch_links(url: str):
-    """
-    Fetch all links from a page.
-    """
+
+
+# -----------------------
+# CRAWLER
+# -----------------------
+
+def fetch_links(base_url: str):
     try:
-        response = session.get(url, timeout=TIMEOUT)
+        response = session.get(base_url, timeout=TIMEOUT)
 
         if "text/html" not in response.headers.get("Content-Type", ""):
             return []
@@ -120,7 +135,12 @@ def fetch_links(url: str):
         links = []
 
         for tag in soup.find_all("a", href=True):
-            full_url = urljoin(url, tag["href"])
+            href = tag["href"]
+
+            if href.startswith(("#", "mailto:", "javascript:")):
+                continue
+
+            full_url = urljoin(base_url, href)
             links.append(full_url)
 
         return links
@@ -128,6 +148,10 @@ def fetch_links(url: str):
     except requests.RequestException:
         return []
 
+
+# -----------------------
+# DOWNLOADER
+# -----------------------
 
 def download_file(url: str):
     try:
@@ -142,15 +166,25 @@ def download_file(url: str):
                 if chunk:
                     f.write(chunk)
 
-        return True
+        return True, url, None
 
-    except requests.RequestException:
-        return False
+    except requests.RequestException as e:
+        return False, url, str(e)
+
+
+# -----------------------
+# CRAWL STATE
+# -----------------------
 
 visited = set()
 media_files = set()
 
 queue = deque([(args.url, 0)])
+
+
+# -----------------------
+# BFS CRAWL
+# -----------------------
 
 while queue:
     current_url, depth = queue.popleft()
@@ -164,14 +198,24 @@ while queue:
 
     for link in links:
 
+        if not link:
+            continue
+
         if is_media_file(link):
             media_files.add(link)
 
-        elif args.recursive and (args.depth is None or depth < args.depth):
+        elif args.recursive and (
+            args.depth is None or depth < args.depth
+        ):
             queue.append((link, depth + 1))
 
 
 print(f"Found {len(media_files)} files")
+
+
+# -----------------------
+# DOWNLOAD PHASE
+# -----------------------
 
 with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
 
@@ -181,13 +225,24 @@ with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
     ]
 
     success = 0
+    failed = []
 
     with tqdm(total=len(futures), desc="Downloading", unit="file") as pbar:
 
         for future in as_completed(futures):
-            if future.result():
+            ok, url, err = future.result()
+
+            if ok:
                 success += 1
+            else:
+                failed.append((url, err))
 
             pbar.update(1)
 
-print(f"Downloaded {success}/{len(media_files)} files")
+
+print(f"\nDownloaded {success}/{len(media_files)} files")
+
+if failed:
+    print("\nFailures:")
+    for url, err in failed:
+        print(f"- {url} -> {err}")
