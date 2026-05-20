@@ -32,7 +32,6 @@ parser.add_argument(
     metavar="URL",
     type=str,
     help="Target URL to scan for images.",
-    required=True
 )
 
 parser.add_argument(
